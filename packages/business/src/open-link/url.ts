@@ -133,3 +133,55 @@ export const resolveOpenLinkDestination = (props: {
 
   return verifyOpenLinkUrl({ workspaceId, url }, s) ? url : null
 }
+
+/**
+ * A link button whose click must run the button's own actions (tags, jumps…)
+ * on a channel that opens links without telling the bot (Instagram
+ * `web_url`). The contact is sent through `/go/<workspaceId>/click`, which
+ * runs the actions for the contact encoded in `c` and redirects to `u`.
+ * The signature covers both the payload and the destination, so neither the
+ * contact nor the destination can be swapped.
+ */
+export const buildTrackedClickUrl = (props: {
+  appUrl: string
+  workspaceId: string
+  url: string
+  code: string
+}): string => {
+  const target = new URL(`/go/${props.workspaceId}/click`, props.appUrl)
+  target.searchParams.set("u", Buffer.from(props.url, "utf8").toString("base64url"))
+  target.searchParams.set("c", props.code)
+  target.searchParams.set(
+    "s",
+    signOpenLinkUrl({
+      workspaceId: props.workspaceId,
+      url: `${props.code}\n${props.url}`,
+    }),
+  )
+  return target.toString()
+}
+
+export const resolveTrackedClick = (props: {
+  workspaceId: string
+  u: string | null | undefined
+  c: string | null | undefined
+  s: string | null | undefined
+}): { url: string; code: string } | null => {
+  const { workspaceId, u, c, s } = props
+  if (!(u && c && s)) {
+    return null
+  }
+  let url: string
+  try {
+    url = Buffer.from(u, "base64url").toString("utf8")
+    const parsed = new URL(url)
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return null
+    }
+  } catch {
+    return null
+  }
+  return verifyOpenLinkUrl({ workspaceId, url: `${c}\n${url}` }, s)
+    ? { url, code: c }
+    : null
+}

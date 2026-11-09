@@ -18,7 +18,10 @@ import {
   resolveTenantSettings,
 } from "@chatbotx.io/business"
 import { logProviderErrorForChannel } from "@chatbotx.io/business/error-log"
-import { wrapOpenLinkUrl } from "@chatbotx.io/business/open-link"
+import {
+  buildTrackedClickUrl,
+  wrapOpenLinkUrl,
+} from "@chatbotx.io/business/open-link"
 import { getPublicFileUrl } from "@chatbotx.io/business/utils"
 import {
   channelTypes,
@@ -44,6 +47,7 @@ import {
   channelDeliverableStepTypes,
   encodeButtonPayload,
   extractMetadata,
+  isMagicLinkUrl,
   getChannelFlowPolicy,
   isBulkOutboundMetadata,
   isNativeButtonType,
@@ -406,6 +410,51 @@ const wrapOpenLinksInStep = async (props: {
     props.step,
     (buttons) => wrapOpenLinkButtonsIfNeeded({ ...props, buttons }) ?? [],
   )
+
+/**
+ * A link button with click actions (`steps`) is sent through the signed
+ * `/go/<workspaceId>/click` URL so opening it runs those actions for this
+ * contact (Instagram and Messenger open `web_url` buttons without any
+ * postback). Magic links already report their own clicks and keep `?code=`.
+ */
+const trackLinkClickButtons = (props: {
+  workspaceId: string
+  appUrl: string
+  flowId: string
+  flowVersionId?: string
+  contactInboxId: string
+  buttons?: ButtonStepProps[]
+}): ButtonStepProps[] | undefined =>
+  props.buttons?.map((button) => {
+    if (
+      button.buttonType !== buttonTypes.enum.openWebsite ||
+      !(button.steps && button.steps.length > 0) ||
+      !props.appUrl ||
+      !button.beforeStep.url ||
+      button.beforeStep.url.includes("{{") ||
+      isMagicLinkUrl(button.beforeStep.url)
+    ) {
+      return button
+    }
+    const code = encodeButtonPayload({
+      flowId: props.flowId,
+      flowVersionId: props.flowVersionId,
+      buttonId: button.id,
+      contactInboxId: props.contactInboxId,
+    })
+    return {
+      ...button,
+      beforeStep: {
+        ...button.beforeStep,
+        url: buildTrackedClickUrl({
+          appUrl: props.appUrl,
+          workspaceId: props.workspaceId,
+          url: button.beforeStep.url,
+          code,
+        }),
+      },
+    }
+  })
 
 const convertCardsToTemplate = (props: {
   channel: string
@@ -792,13 +841,27 @@ export async function sendFlowStep({
       appUrl,
       channel: targetContactInbox.channel,
     }
-    const stepForSend = await wrapOpenLinksInStep({
-      ...openLinkProps,
-      step: stepWithSignedBookingLinks,
-    })
-    const quickRepliesForSend = wrapOpenLinkButtonsIfNeeded({
-      ...openLinkProps,
-      buttons: quickRepliesWithSignedBookingLinks,
+    const trackClickProps = {
+      workspaceId: conversation.workspaceId,
+      appUrl,
+      flowId,
+      flowVersionId,
+      contactInboxId: targetContactInbox.id,
+    }
+    const stepForSend = await mapStepButtons(
+      await wrapOpenLinksInStep({
+        ...openLinkProps,
+        step: stepWithSignedBookingLinks,
+      }),
+      (buttons) =>
+        trackLinkClickButtons({ ...trackClickProps, buttons }) ?? buttons,
+    )
+    const quickRepliesForSend = trackLinkClickButtons({
+      ...trackClickProps,
+      buttons: wrapOpenLinkButtonsIfNeeded({
+        ...openLinkProps,
+        buttons: quickRepliesWithSignedBookingLinks,
+      }),
     })
 
     let contentAttributes: (typeof messageModel.$inferInsert)["contentAttributes"] =
