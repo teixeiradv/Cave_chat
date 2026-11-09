@@ -1,11 +1,47 @@
 "use client"
+import { cn } from "@chatbotx.io/ui/lib/utils"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTranslations } from "next-intl"
-import { useMemo } from "react"
-import { AppTab } from "@/components/app-tab"
 import { useWorkspaceId } from "@/hooks/routing"
 
 const GENERAL_TAB_VALUE = "general"
+
+type SettingsLink = { label: string; path: string; inSettings: boolean }
+
+// CaveChat: configurações agrupadas como na Gaio (Principal, Leads, Chat, Integrações).
+// Os itens "inSettings" ficam em /settings/...; os outros são páginas do workspace.
+const SETTINGS_GROUPS: { label: string; links: SettingsLink[] }[] = [
+  {
+    label: "Principal",
+    links: [
+      { label: "Geral", path: "general", inSettings: true },
+      { label: "Membros da equipe", path: "admins", inSettings: true },
+      { label: "Canais", path: "channels", inSettings: true },
+    ],
+  },
+  {
+    label: "Leads",
+    links: [
+      { label: "Inbox e equipes", path: "inbox-teams", inSettings: true },
+      { label: "Campos personalizados", path: "custom-fields", inSettings: false },
+      { label: "Etiquetas", path: "tags", inSettings: false },
+    ],
+  },
+  {
+    label: "Chat",
+    links: [
+      { label: "Menus persistentes", path: "user-persistent-menus", inSettings: true },
+    ],
+  },
+  {
+    label: "Integrações",
+    links: [
+      { label: "Integrações", path: "integrations", inSettings: true },
+      { label: "Webhooks", path: "webhooks", inSettings: false },
+    ],
+  },
+]
 
 export function SettingsTab({
   scheduledForDeletion = false,
@@ -14,56 +50,57 @@ export function SettingsTab({
 }) {
   const t = useTranslations()
   const pathname = usePathname()
-
   const workspaceId = useWorkspaceId()
 
-  const tabs = useMemo(
-    () => [
-      {
-        label: t("general.title"),
-        value: "general",
-      },
-      {
-        label: t("channels.title"),
-        value: "channels",
-      },
-      {
-        label: t("integrations.title"),
-        value: "integrations",
-      },
-      {
-        label: t("admins.title"),
-        value: "admins",
-      },
-      {
-        label: t("inboxTeams.title"),
-        value: "inbox-teams",
-      },
-      // {
-      //   label: t("billing.title"),
-      //   value: "billing",
-      // },
-    ],
-    [t],
-  )
-
-  const activeTab = useMemo(() => {
-    const segments = pathname.split("/")
-    const settingsIndex = segments.indexOf("settings")
-    return settingsIndex === -1 ? undefined : segments[settingsIndex + 1]
-  }, [pathname])
-
   return (
-    <AppTab
-      tabs={tabs.map((tab) => ({
-        label: tab.label,
-        href: `/space/${workspaceId}/settings/${tab.value}`,
-        isActive: activeTab === tab.value,
-        disabled: scheduledForDeletion && tab.value !== GENERAL_TAB_VALUE,
-        disabledTooltip: scheduledForDeletion
-          ? t("workspace.deletion.navDisabledTooltip")
-          : undefined,
-      }))}
-    />
+    <nav
+      aria-label="Configurações"
+      className="w-full shrink-0 md:w-56"
+    >
+      <div className="px-3 pb-2">
+        <div className="font-semibold text-base">Configurações da conta</div>
+        <div className="text-muted-foreground text-xs">
+          Gerencie as configurações do seu workspace
+        </div>
+      </div>
+      {SETTINGS_GROUPS.map((group) => (
+        <div className="pt-3" key={group.label}>
+          <div className="px-3 pb-1 font-medium text-muted-foreground text-xs">
+            {group.label}
+          </div>
+          {group.links.map((link) => {
+            const href = link.inSettings
+              ? `/space/${workspaceId}/settings/${link.path}`
+              : `/space/${workspaceId}/${link.path}`
+            const isActive = pathname.startsWith(href)
+            const disabled =
+              scheduledForDeletion && link.path !== GENERAL_TAB_VALUE
+            return disabled ? (
+              <span
+                className="block cursor-not-allowed rounded-md px-3 py-2 text-muted-foreground text-sm opacity-50"
+                key={link.path}
+                title={t("workspace.deletion.navDisabledTooltip")}
+              >
+                {link.label}
+              </span>
+            ) : (
+              <Link
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "block rounded-md border-l-2 px-3 py-2 text-sm transition-colors hover:bg-accent",
+                  isActive
+                    ? "border-primary bg-accent font-medium text-foreground"
+                    : "border-transparent text-muted-foreground",
+                )}
+                href={href}
+                key={link.path}
+              >
+                {link.label}
+              </Link>
+            )
+          })}
+        </div>
+      ))}
+    </nav>
   )
 }

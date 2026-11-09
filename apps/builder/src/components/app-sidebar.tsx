@@ -43,11 +43,23 @@ import {
   type WorkspacePermissionKey,
 } from "@/lib/auth/permission-routes"
 
+type NavGroupKey = "top" | "leads" | "automations" | "account"
+
+// CaveChat: grupos do menu na ordem da Gaio (o primeiro não tem título)
+const NAV_GROUPS: { key: NavGroupKey; label?: string }[] = [
+  { key: "top" },
+  { key: "leads", label: "Leads" },
+  { key: "automations", label: "Automações" },
+  { key: "account", label: "Conta" },
+]
+
 type SidebarNavItem = {
   title: string
   url: string
   icon: LucideIcon
   permission: WorkspacePermissionKey
+  /** CaveChat: grupo do menu, no jeito da Gaio */
+  group: NavGroupKey
   /** Only present for items with an extra visibility rule beyond the
    * permission check below — computed once in the workspace layout via
    * `resolveWorkspaceRealtimeGates`. */
@@ -95,85 +107,99 @@ export function AppSidebar({
         url: `/space/${workspaceId}/dashboard`,
         icon: HouseIcon,
         permission: PERMISSION_NAV.dashboard,
-      },
-      {
-        title: "Live Chat",
-        url: `/space/${workspaceId}/inbox`,
-        icon: MessageCircleMoreIcon,
-        permission: PERMISSION_NAV.contacts,
-      },
-      {
-        title: "Automações",
-        url: `/space/${workspaceId}/flows`,
-        icon: WorkflowIcon,
-        permission: PERMISSION_NAV.flows,
-      },
-      {
-        title: "Leads",
-        url: `/space/${workspaceId}/contacts`,
-        icon: UsersIcon,
-        permission: PERMISSION_NAV.contacts,
-      },
-      {
-        title: "Funil de vendas",
-        url: `/space/${workspaceId}/pipelines`,
-        icon: SquareKanbanIcon,
-        permission: PERMISSION_NAV.pipelines,
+        group: "top",
       },
       {
         title: "Assistente IA",
         url: `/space/${workspaceId}/ai-agents`,
         icon: SparklesIcon,
         permission: PERMISSION_NAV.flows,
+        group: "top",
+      },
+      {
+        title: "Live Chat",
+        url: `/space/${workspaceId}/inbox`,
+        icon: MessageCircleMoreIcon,
+        permission: PERMISSION_NAV.contacts,
+        group: "leads",
+      },
+      {
+        title: "Contatos",
+        url: `/space/${workspaceId}/contacts`,
+        icon: UsersIcon,
+        permission: PERMISSION_NAV.contacts,
+        group: "leads",
+      },
+      {
+        title: "Funil de vendas",
+        url: `/space/${workspaceId}/pipelines`,
+        icon: SquareKanbanIcon,
+        permission: PERMISSION_NAV.pipelines,
+        group: "leads",
       },
       {
         title: "Campanhas",
         url: `/space/${workspaceId}/broadcasts`,
         icon: MegaphoneIcon,
         permission: PERMISSION_NAV.broadcasts,
-      },
-      {
-        title: "Sequências",
-        url: `/space/${workspaceId}/sequences`,
-        icon: ChevronsRight,
-        permission: PERMISSION_NAV.sequences,
-      },
-      {
-        title: "Respostas automáticas",
-        url: `/space/${workspaceId}/automated-responses`,
-        icon: AtomIcon,
-        permission: "superAdmin",
-      },
-      {
-        title: "Gatilhos",
-        url: `/space/${workspaceId}/triggers`,
-        icon: LightbulbIcon,
-        permission: "superAdmin",
+        group: "leads",
       },
       {
         title: "Ligações",
         url: `/space/${workspaceId}/calls`,
         icon: PhoneCallIcon,
         permission: PERMISSION_NAV.contacts,
+        group: "leads",
         visible: callHistoryNavVisible,
+      },
+      {
+        title: "Fluxos",
+        url: `/space/${workspaceId}/flows`,
+        icon: WorkflowIcon,
+        permission: PERMISSION_NAV.flows,
+        group: "automations",
+      },
+      {
+        title: "Respostas automáticas",
+        url: `/space/${workspaceId}/automated-responses`,
+        icon: AtomIcon,
+        permission: "superAdmin",
+        group: "automations",
+      },
+      {
+        title: "Sequências",
+        url: `/space/${workspaceId}/sequences`,
+        icon: ChevronsRight,
+        permission: PERMISSION_NAV.sequences,
+        group: "automations",
+      },
+      {
+        title: "Gatilhos",
+        url: `/space/${workspaceId}/triggers`,
+        icon: LightbulbIcon,
+        permission: "superAdmin",
+        group: "automations",
       },
       {
         title: "Ferramentas",
         url: `/space/${workspaceId}/tools`,
         icon: WrenchIcon,
         permission: PERMISSION_NAV.flows,
+        group: "account",
       },
       {
         title: "Webhooks",
         url: `/space/${workspaceId}/webhooks`,
         icon: WebhookIcon,
         permission: "superAdmin",
+        group: "account",
       },
       {
         title: "Configurações",
         url: `/space/${workspaceId}/settings/general`,
         icon: SlidersHorizontalIcon,
         permission: "superAdmin",
+        group: "account",
       },
     ] satisfies SidebarNavItem[],
   }
@@ -213,10 +239,17 @@ export function AppSidebar({
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain
-          disabledTooltip={t("workspace.deletion.navDisabledTooltip")}
-          items={navMain}
-        />
+        {NAV_GROUPS.map((group) => {
+          const groupItems = navMain.filter((item) => item.group === group.key)
+          return groupItems.length > 0 ? (
+            <NavMain
+              disabledTooltip={t("workspace.deletion.navDisabledTooltip")}
+              items={groupItems}
+              key={group.key}
+              label={group.label}
+            />
+          ) : null
+        })}
       </SidebarContent>
       <SidebarFooter>
         <NavUsage
