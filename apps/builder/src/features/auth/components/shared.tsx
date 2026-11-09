@@ -39,7 +39,7 @@ export const AuthHeader = ({ title }: AuthHeaderProps) => {
         )}
       </div>
 
-      <CardTitle className="text-slate-600 text-xl">{title}</CardTitle>
+      <CardTitle className="font-semibold text-foreground text-xl">{title}</CardTitle>
     </>
   )
 }

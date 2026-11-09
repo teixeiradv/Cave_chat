@@ -38,12 +38,12 @@ export async function generateMetadata(): Promise<Metadata> {
     icons: [
       {
         rel: "icon",
-        url: faviconUrl ?? "/brand/mc-icon.png",
+        url: faviconUrl ?? "/brand/cavechat-icon-96.png",
         type: "image/png",
       },
       {
         rel: "apple-touch-icon",
-        url: faviconUrl ?? "/brand/mc-icon.png",
+        url: faviconUrl ?? "/brand/cavechat-icon-180.png",
         sizes: "180x180",
       },
     ],

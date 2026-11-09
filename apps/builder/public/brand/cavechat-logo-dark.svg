@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="271" height="80" viewBox="0 0 271 80">
+  <g transform="translate(14 14)">
+    <path d="M10 0h32a10 10 0 0 1 10 10v22a10 10 0 0 1-10 10H24l-12 10v-10h-2A10 10 0 0 1 0 32V10A10 10 0 0 1 10 0z" fill="#ea1b2d"/>
+    <circle cx="15" cy="21" r="3.6" fill="#fff"/><circle cx="26" cy="21" r="3.6" fill="#fff"/><circle cx="37" cy="21" r="3.6" fill="#fff"/>
+  </g>
+  <text x="80" y="52" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="-0.5" fill="#0a0a0b">Cave<tspan fill="#ea1b2d">Chat</tspan></text>
+</svg>
