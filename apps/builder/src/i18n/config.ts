@@ -23,7 +23,8 @@ export const locales = [
 ] as const
 
 export type Locale = (typeof locales)[number]
-export const defaultLocale: Locale = "en"
+// CaveChat: the interface is always Brazilian Portuguese.
+export const defaultLocale: Locale = "pt-BR"
 
 export const localeMeta: Record<
   Locale,

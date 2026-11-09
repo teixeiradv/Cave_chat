@@ -22,7 +22,10 @@ import { useState, useTransition } from "react"
 import { isLocale, localeMeta, locales, resolveLocale } from "@/i18n/config"
 import { setUserLocale } from "@/lib/locale"
 
-const items = locales.map((value) => ({
+// CaveChat: the interface is locked to pt-BR, so it is the only option.
+const items = locales
+  .filter((value) => value === "pt-BR")
+  .map((value) => ({
   value,
   label: localeMeta[value].nativeLabel,
 }))

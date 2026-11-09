@@ -38,12 +38,12 @@ export async function generateMetadata(): Promise<Metadata> {
     icons: [
       {
         rel: "icon",
-        url: faviconUrl ?? "/brand/favicon/favicon-96x96.png",
+        url: faviconUrl ?? "/brand/mc-icon.png",
         type: "image/png",
       },
       {
         rel: "apple-touch-icon",
-        url: faviconUrl ?? "/brand/favicon/apple-touch-icon.png",
+        url: faviconUrl ?? "/brand/mc-icon.png",
         sizes: "180x180",
       },
     ],
@@ -68,6 +68,16 @@ export default async function RootLayout({ children }: Props) {
   return (
     <html dir={dir} lang={locale} suppressHydrationWarning>
       <head>
+        <link href="https://fonts.googleapis.com" rel="preconnect" />
+        <link
+          crossOrigin="anonymous"
+          href="https://fonts.gstatic.com"
+          rel="preconnect"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         <PublicEnvScript />
         {isBuilderDomain && pancakeChatPageId && (
           <SupportChatScript pageId={pancakeChatPageId} />

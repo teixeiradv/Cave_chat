@@ -7,8 +7,9 @@ import { defaultLocale, type Locale } from "@/i18n/config"
 // also read it from a database, backend service, or any other source.
 const COOKIE_NAME = "NEXT_LOCALE"
 
-export async function getUserLocale() {
-  return (await cookies()).get(COOKIE_NAME)?.value || defaultLocale
+// CaveChat: the interface is locked to pt-BR, whatever the cookie says.
+export async function getUserLocale(): Promise<Locale> {
+  return await Promise.resolve(defaultLocale)
 }
 
 export async function setUserLocale(locale: Locale) {
