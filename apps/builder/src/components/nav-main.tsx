@@ -20,6 +20,8 @@ type NavItem = {
   items?: { title: string; url: string }[]
   crossZone?: boolean
   disabled?: boolean
+  /** CaveChat: selo pequeno ao lado do nome (ex.: "Beta") */
+  badge?: string
 }
 
 function NavItemContent({
@@ -39,6 +41,11 @@ function NavItemContent({
     <>
       {item.icon && <item.icon className="size-5 shrink-0" />}
       <span>{item.title}</span>
+      {item.badge && (
+        <span className="ms-auto rounded-full bg-primary/10 px-1.5 py-0.5 font-medium text-[10px] text-primary leading-none">
+          {item.badge}
+        </span>
+      )}
     </>
   )
 

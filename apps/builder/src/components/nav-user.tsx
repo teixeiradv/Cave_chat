@@ -20,7 +20,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@chatbotx.io/ui/components/ui/sidebar"
-import { CreditCard, Crown, Settings2, ShieldCheck } from "lucide-react"
+import {
+  CreditCard,
+  Crown,
+  Settings2,
+  SettingsIcon,
+  ShieldCheck,
+} from "lucide-react"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
@@ -38,6 +44,7 @@ export function NavUser({
   canAccessManage,
   isSuperAdmin,
   planName,
+  settingsUrl,
 }: {
   user: {
     name: string
@@ -47,6 +54,8 @@ export function NavUser({
   canAccessManage?: boolean
   isSuperAdmin?: boolean
   planName?: string | null
+  /** CaveChat: link "Configurações da conta" no menu, como na Gaio */
+  settingsUrl?: string
 }) {
   const { isMobile } = useSidebar()
   const t = useTranslations()
@@ -114,6 +123,24 @@ export function NavUser({
               </DropdownMenuLabel>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
+            {settingsUrl && (
+              <>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="font-normal text-muted-foreground text-xs">
+                    Minha conta
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem
+                    render={
+                      <Link href={settingsUrl}>
+                        <SettingsIcon className="h-4 w-4" />
+                        Configurações da conta
+                      </Link>
+                    }
+                  />
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+              </>
+            )}
             {/* Plan + upgrade is cloud-only; self-hosted editions get everything free. */}
             {isCloud() && (
               <>

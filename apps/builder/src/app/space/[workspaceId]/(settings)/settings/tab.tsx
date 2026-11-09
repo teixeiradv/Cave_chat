@@ -23,7 +23,7 @@ const SETTINGS_GROUPS: { label: string; links: SettingsLink[] }[] = [
   {
     label: "Leads",
     links: [
-      { label: "Inbox e equipes", path: "inbox-teams", inSettings: true },
+      { label: "Inbox", path: "inbox-teams", inSettings: true },
       { label: "Campos personalizados", path: "custom-fields", inSettings: false },
       { label: "Etiquetas", path: "tags", inSettings: false },
     ],
@@ -60,7 +60,7 @@ export function SettingsTab({
       <div className="px-3 pb-2">
         <div className="font-semibold text-base">Configurações da conta</div>
         <div className="text-muted-foreground text-xs">
-          Gerencie as configurações do seu workspace
+          Gerencie suas configurações de conta
         </div>
       </div>
       {SETTINGS_GROUPS.map((group) => (

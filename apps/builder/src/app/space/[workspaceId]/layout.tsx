@@ -30,6 +30,7 @@ import { SupportAccessBanner } from "@/components/support-access-banner"
 import { TokenRefreshErrorDialog } from "@/components/token-refresh-error-dialog"
 import { WorkspaceDeletionTabSync } from "@/components/workspace-deletion-tab-sync"
 import { WorkspaceRealtimeShell } from "@/components/workspace-realtime-shell"
+import { WorkspaceSectionHeader } from "@/components/workspace-section-header"
 import { isCloud } from "@/env"
 import { AnalyticsApiProvider } from "@/features/analytics/components/analytics-api-provider"
 import { CouponTopicStoreProvider } from "@/features/coupons/provider/coupon-topic-store-context"
@@ -176,6 +177,13 @@ export default async function WorkspaceLayout({
           workspaceId={workspaceId}
         />
         <SidebarInset>
+          <WorkspaceSectionHeader
+            callHistoryNavVisible={realtimeGates.callHistoryNavVisible}
+            permissions={targetWorkspaceMember.permissions}
+            scheduledForDeletion={scheduledForDeletion}
+            workspaceId={workspaceId}
+            workspaceName={targetWorkspace.name ?? ""}
+          />
           {/*
           `min-h-0` lets this column shrink to the capped shell above instead of
           being floored at its content height — without it the cap is inert and

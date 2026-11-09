@@ -8,24 +8,16 @@ import {
   SidebarHeader,
 } from "@chatbotx.io/ui/components/ui/sidebar"
 import {
-  AtomIcon,
-  ChevronsRight,
+  GlobeIcon,
   HouseIcon,
-  LightbulbIcon,
   type LucideIcon,
-  MegaphoneIcon,
-  MessageCircleMoreIcon,
-  PhoneCallIcon,
-  SlidersHorizontalIcon,
   SparklesIcon,
-  SquareKanbanIcon,
-  UsersIcon,
-  WebhookIcon,
+  UserIcon,
   WorkflowIcon,
-  WrenchIcon,
 } from "lucide-react"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useTranslations } from "next-intl"
 import type { ComponentProps } from "react"
 import { BrandIcon } from "@/components/brand-icon"
@@ -34,35 +26,28 @@ import { NavMain } from "@/components/nav-main"
 import { NavUsage, type QuotaSummary } from "@/components/nav-usage"
 import { NavUser } from "@/components/nav-user"
 import { WorkspaceSwitcher } from "@/components/workspace-switcher"
+import {
+  getVisibleSectionTabs,
+  parseWorkspacePath,
+} from "@/components/workspace-sections"
 import type { WorkspaceResource } from "@/features/workspaces/schema/resource"
 import { authClient } from "@/lib/auth/auth-client"
 import {
-  hasContactsAccess,
   hasWorkspacePermission,
   PERMISSION_NAV,
   type WorkspacePermissionKey,
 } from "@/lib/auth/permission-routes"
 
-type NavGroupKey = "top" | "leads" | "automations" | "account"
-
-// CaveChat: grupos do menu na ordem da Gaio (o primeiro não tem título)
-const NAV_GROUPS: { key: NavGroupKey; label?: string }[] = [
-  { key: "top" },
-  { key: "leads", label: "Leads" },
-  { key: "automations", label: "Automações" },
-  { key: "account", label: "Conta" },
-]
-
+// CaveChat: menu lateral igual ao da Gaio — só as 5 seções. As páginas de
+// Leads e Automações viram abas no cabeçalho (workspace-section-header.tsx).
 type SidebarNavItem = {
   title: string
   url: string
   icon: LucideIcon
   permission: WorkspacePermissionKey
-  /** CaveChat: grupo do menu, no jeito da Gaio */
-  group: NavGroupKey
-  /** Only present for items with an extra visibility rule beyond the
-   * permission check below — computed once in the workspace layout via
-   * `resolveWorkspaceRealtimeGates`. */
+  badge?: string
+  isActive?: boolean
+  /** Quando presente, substitui a checagem de permissão. */
   visible?: boolean
 }
 
@@ -81,7 +66,7 @@ export function AppSidebar({
 }: ComponentProps<typeof Sidebar> & {
   workspaceId: string
   allWorkspaces: WorkspaceResource[]
-  /** Gates the Calls nav item: call-history permission AND a connected
+  /** Gates the Calls tab: call-history permission AND a connected
    * call-capable channel. */
   callHistoryNavVisible: boolean
   canAccessManage?: boolean
@@ -94,136 +79,85 @@ export function AppSidebar({
 }) {
   const t = useTranslations()
   const { data: session } = authClient.useSession()
+  const pathname = usePathname()
+  const section = parseWorkspacePath(pathname)?.section ?? null
 
-  const data = {
-    user: {
-      name: session?.user.name ?? "",
-      email: session?.user.email ?? "",
-      avatar: session?.user.image ?? "",
-    },
-    navMain: [
-      {
-        title: "Início",
-        url: `/space/${workspaceId}/dashboard`,
-        icon: HouseIcon,
-        permission: PERMISSION_NAV.dashboard,
-        group: "top",
-      },
-      {
-        title: "Assistente IA",
-        url: `/space/${workspaceId}/ai-agents`,
-        icon: SparklesIcon,
-        permission: PERMISSION_NAV.flows,
-        group: "top",
-      },
-      {
-        title: "Live Chat",
-        url: `/space/${workspaceId}/inbox`,
-        icon: MessageCircleMoreIcon,
-        permission: PERMISSION_NAV.contacts,
-        group: "leads",
-      },
-      {
-        title: "Contatos",
-        url: `/space/${workspaceId}/contacts`,
-        icon: UsersIcon,
-        permission: PERMISSION_NAV.contacts,
-        group: "leads",
-      },
-      {
-        title: "Funil de vendas",
-        url: `/space/${workspaceId}/pipelines`,
-        icon: SquareKanbanIcon,
-        permission: PERMISSION_NAV.pipelines,
-        group: "leads",
-      },
-      {
-        title: "Campanhas",
-        url: `/space/${workspaceId}/broadcasts`,
-        icon: MegaphoneIcon,
-        permission: PERMISSION_NAV.broadcasts,
-        group: "leads",
-      },
-      {
-        title: "Ligações",
-        url: `/space/${workspaceId}/calls`,
-        icon: PhoneCallIcon,
-        permission: PERMISSION_NAV.contacts,
-        group: "leads",
-        visible: callHistoryNavVisible,
-      },
-      {
-        title: "Fluxos",
-        url: `/space/${workspaceId}/flows`,
-        icon: WorkflowIcon,
-        permission: PERMISSION_NAV.flows,
-        group: "automations",
-      },
-      {
-        title: "Respostas automáticas",
-        url: `/space/${workspaceId}/automated-responses`,
-        icon: AtomIcon,
-        permission: "superAdmin",
-        group: "automations",
-      },
-      {
-        title: "Sequências",
-        url: `/space/${workspaceId}/sequences`,
-        icon: ChevronsRight,
-        permission: PERMISSION_NAV.sequences,
-        group: "automations",
-      },
-      {
-        title: "Gatilhos",
-        url: `/space/${workspaceId}/triggers`,
-        icon: LightbulbIcon,
-        permission: "superAdmin",
-        group: "automations",
-      },
-      {
-        title: "Ferramentas",
-        url: `/space/${workspaceId}/tools`,
-        icon: WrenchIcon,
-        permission: PERMISSION_NAV.flows,
-        group: "account",
-      },
-      {
-        title: "Webhooks",
-        url: `/space/${workspaceId}/webhooks`,
-        icon: WebhookIcon,
-        permission: "superAdmin",
-        group: "account",
-      },
-      {
-        title: "Configurações",
-        url: `/space/${workspaceId}/settings/general`,
-        icon: SlidersHorizontalIcon,
-        permission: "superAdmin",
-        group: "account",
-      },
-    ] satisfies SidebarNavItem[],
+  const user = {
+    name: session?.user.name ?? "",
+    email: session?.user.email ?? "",
+    avatar: session?.user.image ?? "",
   }
 
+  const leadsTabs = getVisibleSectionTabs(
+    "leads",
+    permissions,
+    callHistoryNavVisible,
+  )
+  const automationTabs = getVisibleSectionTabs(
+    "automations",
+    permissions,
+    callHistoryNavVisible,
+  )
+
+  const items: SidebarNavItem[] = [
+    {
+      title: "Geral",
+      url: `/space/${workspaceId}/dashboard`,
+      icon: HouseIcon,
+      permission: PERMISSION_NAV.dashboard,
+      isActive: section === "general",
+    },
+    {
+      title: "Assistente",
+      url: `/space/${workspaceId}/ai-agents`,
+      icon: SparklesIcon,
+      permission: PERMISSION_NAV.flows,
+      badge: "Beta",
+      isActive: section === "assistant",
+    },
+    {
+      title: "Automações",
+      url: `/space/${workspaceId}/${automationTabs[0]?.segment ?? "flows"}`,
+      icon: WorkflowIcon,
+      permission: PERMISSION_NAV.flows,
+      visible: automationTabs.length > 0,
+      isActive: section === "automations",
+    },
+    {
+      title: "Leads",
+      url: `/space/${workspaceId}/${leadsTabs[0]?.segment ?? "inbox"}`,
+      icon: UserIcon,
+      permission: PERMISSION_NAV.contacts,
+      visible: leadsTabs.length > 0,
+      isActive: section === "leads",
+    },
+    {
+      title: "Comunidade",
+      url: `/space/${workspaceId}/tools`,
+      icon: GlobeIcon,
+      permission: PERMISSION_NAV.flows,
+      isActive: section === "community",
+    },
+  ]
+
   const isNavItemVisible = (item: SidebarNavItem): boolean => {
-    // `visible` overrides the default single-permission gate below for an
-    // item whose rule isn't a plain permission flag (Calls, see
-    // `callHistoryNavVisible`).
     if (item.visible !== undefined) {
       return item.visible
-    }
-    // Items gated on the `contacts` flag (Contacts, Inbox) use the shared
-    // contacts-access rule, which also admits assigned-only members.
-    if (item.permission === PERMISSION_NAV.contacts) {
-      return hasContactsAccess(permissions)
     }
     return hasWorkspacePermission(permissions, item.permission)
   }
 
-  const navMain = data.navMain.filter(isNavItemVisible).map((item) => ({
+  const navMain = items.filter(isNavItemVisible).map((item) => ({
     ...item,
     disabled:
       scheduledForDeletion && !item.url.endsWith(SETTINGS_GENERAL_URL_SEGMENT),
   }))
+
+  // "Configurações da conta" fica no menu do avatar, como na Gaio
+  // (antes era um item do menu lateral, só para superAdmin).
+  const settingsUrl = hasWorkspacePermission(permissions, "superAdmin")
+    ? `/space/${workspaceId}${SETTINGS_GENERAL_URL_SEGMENT}`
+    : undefined
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -239,17 +173,10 @@ export function AppSidebar({
         </div>
       </SidebarHeader>
       <SidebarContent>
-        {NAV_GROUPS.map((group) => {
-          const groupItems = navMain.filter((item) => item.group === group.key)
-          return groupItems.length > 0 ? (
-            <NavMain
-              disabledTooltip={t("workspace.deletion.navDisabledTooltip")}
-              items={groupItems}
-              key={group.key}
-              label={group.label}
-            />
-          ) : null
-        })}
+        <NavMain
+          disabledTooltip={t("workspace.deletion.navDisabledTooltip")}
+          items={navMain}
+        />
       </SidebarContent>
       <SidebarFooter>
         <NavUsage
@@ -257,13 +184,14 @@ export function AppSidebar({
           planStatus={quota.planStatus}
           trialEndsAt={quota.trialEndsAt}
         />
+        <NavHelp />
         <NavUser
           canAccessManage={canAccessManage}
           isSuperAdmin={isSuperAdmin}
           planName={quota.planName}
-          user={data.user}
+          settingsUrl={settingsUrl}
+          user={user}
         />
-        <NavHelp />
       </SidebarFooter>
     </Sidebar>
   )
