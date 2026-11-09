@@ -156,16 +156,3 @@
     @apply bg-background text-foreground antialiased;
   }
 }
-
-/* CaveChat: barra lateral no estilo da Gaio, em degradê vermelho do Modo Caverna */
-[data-slot="sidebar-inner"] {
-  background-image: linear-gradient(180deg, #ea1b2d 0%, #a3101d 45%, #3a0509 100%);
-  --sidebar-foreground: #ffffff;
-  --sidebar-accent: rgb(255 255 255 / 0.18);
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgb(255 255 255 / 0.14);
-  --sidebar-primary: #ffffff;
-  --sidebar-primary-foreground: #ea1b2d;
-  --sidebar-ring: #ffffff;
-  color: #ffffff;
-}
