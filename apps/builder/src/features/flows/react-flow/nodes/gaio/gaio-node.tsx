@@ -34,6 +34,7 @@ import {
   IconBadge,
   InstagramBadge,
 } from "./gaio-ui"
+import { GaioTriggerCard } from "./gaio-trigger"
 
 type GaioNodeProps = {
   id: string
@@ -193,6 +194,8 @@ export const GaioNodeViewer = memo((props: GaioNodeProps) => {
         )}
         {selected && <Tab className="bg-neutral-600">Selecionado</Tab>}
       </div>
+
+      {data.isStartNode ? <GaioTriggerCard /> : null}
 
       <NodeToolbar isVisible={data.forceToolbarVisible} offset={5}>
         <FlowNodeToolbar isStartNode={data.isStartNode} nodeId={id} />

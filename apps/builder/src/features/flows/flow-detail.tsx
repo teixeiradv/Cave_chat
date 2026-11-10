@@ -11,6 +11,10 @@ import type { FlowVersionResource } from "../flow-versions/schema/resource"
 import type { IntegrationOpenaiCompatibleResource } from "../integration-openai-compatible/schema/resource"
 
 import { ReactFlowFrame } from "./react-flow/frame"
+import {
+  type FlowTrigger,
+  FlowTriggersProvider,
+} from "./react-flow/flow-triggers-context"
 import { FlowTemplateStoreProvider } from "./react-flow/stores/flow-template-store-provider"
 import { StepStoreProvider } from "./react-flow/stores/step-store-provider"
 import { WhatsappFlowStoreProvider } from "./react-flow/stores/whatsapp-flow-store-provider"
@@ -24,6 +28,7 @@ type FlowDetailProps = {
   hasPublishedVersion: boolean
   workspaceTargetCountry: string | null
   isTemplateLocked: boolean
+  flowTriggers?: FlowTrigger[]
 }
 
 export function FlowDetail({
@@ -34,8 +39,12 @@ export function FlowDetail({
   hasPublishedVersion,
   workspaceTargetCountry,
   isTemplateLocked,
+  flowTriggers,
 }: FlowDetailProps) {
   return (
+    <FlowTriggersProvider
+      value={{ workspaceId: flow.workspaceId, triggers: flowTriggers ?? [] }}
+    >
     <ReactFlowProvider>
       <StepStoreProvider
         initialState={{
@@ -69,5 +78,6 @@ export function FlowDetail({
         </FlowTemplateStoreProvider>
       </StepStoreProvider>
     </ReactFlowProvider>
+    </FlowTriggersProvider>
   )
 }

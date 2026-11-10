@@ -8,7 +8,6 @@ import {
   SidebarHeader,
 } from "@chatbotx.io/ui/components/ui/sidebar"
 import {
-  GlobeIcon,
   HouseIcon,
   type LucideIcon,
   SparklesIcon,
@@ -130,13 +129,6 @@ export function AppSidebar({
       permission: PERMISSION_NAV.contacts,
       visible: leadsTabs.length > 0,
       isActive: section === "leads",
-    },
-    {
-      title: "Comunidade",
-      url: `/space/${workspaceId}/tools`,
-      icon: GlobeIcon,
-      permission: PERMISSION_NAV.flows,
-      isActive: section === "community",
     },
   ]
 

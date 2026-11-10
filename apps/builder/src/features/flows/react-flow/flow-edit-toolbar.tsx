@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
 } from "@chatbotx.io/ui/components/ui/alert-dialog"
 import { Badge } from "@chatbotx.io/ui/components/ui/badge"
+import { Switch } from "@chatbotx.io/ui/components/ui/switch"
 import { Button } from "@chatbotx.io/ui/components/ui/button"
 import {
   DropdownMenu,
@@ -51,6 +52,7 @@ import { useInvalidateFlows } from "@/features/flows/provider/flow-hook"
 import { GetInboxUrlDialog } from "@/features/inboxes/components/get-inbox-url"
 import { publishFlowAction } from "../actions/publish-flow-action"
 import { revertToPublishedAction } from "../actions/revert-to-published-action"
+import { updateFlowAction } from "../actions/update-flow-action"
 import { DeleteFlowsDialog } from "../delete-flow-dialog"
 import { DuplicateFlowDialog } from "../duplicate-flow-dialog"
 import { downloadFlowExport } from "../lib/download-flow-export"
@@ -176,6 +178,27 @@ export function FlowEditToolbar({
         markSaved?.(getNodes(), getEdges())
         invalidateFlows()
         router.refresh()
+      },
+    },
+  )
+
+  // Gaio-style on/off: the same "active" flag as the Status switch in the list.
+  const [isActive, setIsActive] = useState<boolean>(Boolean(flow.active))
+  const requestedActiveRef = useRef<boolean>(Boolean(flow.active))
+  const { execute: executeSetActive, isPending: isPendingActive } = useAction(
+    updateFlowAction.bind(null, workspaceId, flow.id),
+    {
+      onSuccess: () => {
+        setIsActive(requestedActiveRef.current)
+        invalidateFlows()
+        toast.success(
+          requestedActiveRef.current
+            ? "Automação ativada"
+            : "Automação pausada",
+        )
+      },
+      onError: () => {
+        toast.error("Não foi possível mudar o status da automação")
       },
     },
   )
@@ -306,8 +329,27 @@ export function FlowEditToolbar({
           </p>
         </TooltipContent>
       </Tooltip>
+      <label
+        className="ms-5 flex cursor-pointer items-center gap-2 rounded-md border px-2.5 text-sm"
+        title={
+          isActive
+            ? "Automação ativa: desligue para pausar"
+            : "Automação pausada: ligue para ativar"
+        }
+      >
+        <Switch
+          checked={isActive}
+          disabled={isPendingActive}
+          onCheckedChange={(value) => {
+            requestedActiveRef.current = Boolean(value)
+            executeSetActive({ active: Boolean(value) })
+          }}
+        />
+        <span className={isActive ? "font-medium" : "text-muted-foreground"}>
+          {isActive ? "Ativa" : "Pausada"}
+        </span>
+      </label>
       <Button
-        className="ms-5"
         disabled={isValidating || isPendingPublish}
         onClick={onClickPublish}
         size="sm"
