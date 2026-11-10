@@ -27,10 +27,13 @@ export function SelectInstagramConnectionTypeDialog({
   workspaceId,
   open,
   onOpenChange,
+  createQuery,
 }: {
   workspaceId: string
   open: boolean
   onOpenChange: (open: boolean) => void
+  /** CaveChat: extra query for the create page (e.g. the flow to run and where to return). */
+  createQuery?: string
 }) {
   const t = useTranslations()
   const [variant, setVariant] = useState<IgCommentVariant | null>(null)
@@ -43,7 +46,7 @@ export function SelectInstagramConnectionTypeDialog({
   }
 
   const createHref = variant
-    ? `/space/${workspaceId}/ig-comments/create?variant=${variant}`
+    ? `/space/${workspaceId}/ig-comments/create?variant=${variant}${createQuery ? `&${createQuery}` : ""}`
     : null
 
   return (

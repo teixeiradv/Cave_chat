@@ -15,7 +15,26 @@ export default async function CreateIgCommentPage(props: {
     return notFound()
   }
 
-  const { variant: rawVariant, postType } = await props.searchParams
+  const {
+    variant: rawVariant,
+    postType,
+    flowId: rawFlowId,
+    returnTo: rawReturnTo,
+    name: rawName,
+  } = await props.searchParams
+  // CaveChat: opened from the "Gatilho" block of a flow — preset that flow as
+  // the private reply and go back to the flow after saving.
+  const presetFlowId =
+    typeof rawFlowId === "string" && /^\d+$/.test(rawFlowId)
+      ? rawFlowId
+      : undefined
+  const returnTo =
+    typeof rawReturnTo === "string" &&
+    rawReturnTo.startsWith(`/space/${data.workspaceId}/`)
+      ? rawReturnTo
+      : undefined
+  const presetName =
+    typeof rawName === "string" ? rawName.slice(0, 255) : undefined
   const isLive = isLivePostTypeParam(postType)
   const { data: variant } = igCommentVariants.safeParse(rawVariant)
   if (!variant) {
@@ -31,6 +50,9 @@ export default async function CreateIgCommentPage(props: {
     >
       <CreateIgCommentForm
         isLive={isLive}
+        presetFlowId={presetFlowId}
+        presetName={presetName}
+        returnTo={returnTo}
         variant={variant}
         workspaceId={data.workspaceId}
       />

@@ -43,7 +43,12 @@ export function FlowDetail({
 }: FlowDetailProps) {
   return (
     <FlowTriggersProvider
-      value={{ workspaceId: flow.workspaceId, triggers: flowTriggers ?? [] }}
+      value={{
+        workspaceId: flow.workspaceId,
+        flowId: flow.id,
+        flowName: flow.name,
+        triggers: flowTriggers ?? [],
+      }}
     >
     <ReactFlowProvider>
       <StepStoreProvider

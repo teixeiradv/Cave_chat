@@ -21,6 +21,8 @@ export type FlowTrigger = {
 
 type FlowTriggersValue = {
   workspaceId: string
+  flowId: string
+  flowName: string
   triggers: FlowTrigger[]
 }
 

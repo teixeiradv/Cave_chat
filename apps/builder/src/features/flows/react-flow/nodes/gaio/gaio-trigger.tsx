@@ -1,8 +1,16 @@
 "use client"
 
 import { cn } from "@chatbotx.io/ui/lib/utils"
-import { ChevronRightIcon, MessageCircleIcon, PlusIcon } from "lucide-react"
+import {
+  ChevronRightIcon,
+  MessageCircleIcon,
+  PlusIcon,
+  TriangleAlertIcon,
+} from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
+import { SelectInstagramConnectionTypeDialog } from "@/features/ig-comments/components/select-instagram-connection-type-dialog"
+import { useInboxListState } from "@/features/inboxes/provider/inbox-hook"
 import { type FlowTrigger, useFlowTriggers } from "../../flow-triggers-context"
 import { InstagramBadge } from "./gaio-ui"
 
@@ -38,24 +46,36 @@ const stop = (event: { stopPropagation: () => void }) => event.stopPropagation()
 
 /**
  * Gaio's first block ("Gatilho"): drawn to the left of the start block, it
- * lists what starts the automation and links to where each trigger is edited.
- * It is not a flow node, so nothing about it is saved in the flow.
+ * lists what starts the automation (the Instagram comment automations whose
+ * private reply runs this flow) and creates a new one already pointing at
+ * this flow, coming back here after saving. It is not a flow node, so nothing
+ * about it is saved in the flow.
  */
 export const GaioTriggerCard = () => {
   const value = useFlowTriggers()
+  const { inboxes, status } = useInboxListState()
+  const [connectionDialogOpen, setConnectionDialogOpen] = useState(false)
   if (!value) {
     return null
   }
-  const { workspaceId, triggers } = value
+  const { workspaceId, flowId, flowName, triggers } = value
   const base = `/space/${workspaceId}`
+  const hasInstagram = inboxes.some((inbox) => inbox.channel === "instagram")
+  const createQuery = new URLSearchParams({
+    flowId,
+    name: `Gatilho: ${flowName}`.slice(0, 255),
+    returnTo: `${base}/flows/${flowId}`,
+  }).toString()
 
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: only stops the click from selecting the start block
     // biome-ignore lint/a11y/useKeyWithClickEvents: same
     <div
-      className="nodrag nopan absolute top-0 right-[calc(100%+72px)] w-[300px] cursor-default"
+      className="nodrag nopan nowheel absolute top-0 right-[calc(100%+72px)] w-[300px] cursor-default"
       onClick={stop}
       onDoubleClick={stop}
+      onMouseDown={stop}
+      onPointerDown={stop}
     >
       <div className="absolute -top-6 left-0 inline-flex items-center gap-1 rounded-t-md bg-neutral-600 px-2 py-0.5 font-semibold text-[11px] text-white">
         Gatilho
@@ -69,6 +89,21 @@ export const GaioTriggerCard = () => {
           </div>
         </div>
         <div className="flex flex-col gap-2 p-4">
+          {status === "success" && !hasInstagram ? (
+            <Link
+              className="flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-amber-700 text-xs dark:text-amber-300"
+              href={`${base}/settings/channels/instagram`}
+              rel="noreferrer"
+              target="_blank"
+            >
+              <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" />
+              <span>
+                Nenhuma conta do Instagram conectada neste workspace. Sem ela
+                nenhum gatilho dispara — conecte em Configurações › Canais ›
+                Instagram.
+              </span>
+            </Link>
+          ) : null}
           <p className="text-muted-foreground text-xs">Gatilhos ativos</p>
           {triggers.length === 0 ? (
             <p className="rounded-lg bg-muted px-3 py-2.5 text-muted-foreground text-sm">
@@ -113,17 +148,16 @@ export const GaioTriggerCard = () => {
             ))
           )}
           <div className="mt-1 flex flex-col gap-1.5">
-            <Link
+            <button
               className="flex items-center justify-center gap-1.5 rounded-lg border border-dashed px-3 py-2 font-medium text-sm transition hover:bg-accent"
-              href={`${base}/ig-comments/create`}
-              rel="noreferrer"
-              target="_blank"
+              onClick={() => setConnectionDialogOpen(true)}
+              type="button"
             >
               <PlusIcon className="size-4" />
-              Adicionar gatilho de comentário
-            </Link>
+              Adicionar gatilho
+            </button>
             <Link
-              className="flex items-center justify-center gap-1.5 rounded-lg border border-dashed px-3 py-2 text-muted-foreground text-xs transition hover:bg-accent"
+              className="flex items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-muted-foreground text-xs transition hover:bg-accent"
               href={`${base}/automated-responses/create`}
               rel="noreferrer"
               target="_blank"
@@ -139,6 +173,12 @@ export const GaioTriggerCard = () => {
       </div>
       {/* Connector to the start block, like Gaio's first edge. */}
       <div className="pointer-events-none absolute top-6 left-full h-0.5 w-[72px] bg-muted-foreground/50" />
+      <SelectInstagramConnectionTypeDialog
+        createQuery={createQuery}
+        onOpenChange={setConnectionDialogOpen}
+        open={connectionDialogOpen}
+        workspaceId={workspaceId}
+      />
     </div>
   )
 }

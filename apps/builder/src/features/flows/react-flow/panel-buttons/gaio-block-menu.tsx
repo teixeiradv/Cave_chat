@@ -168,6 +168,24 @@ const flowChannel = (nodes: FlowNode[]): string | null => {
   return null
 }
 
+/** Steps diagonally until no block starts at (almost) the same spot, so new blocks never stack. */
+const freeSpotNear = (nodes: FlowNode[], start: { x: number; y: number }) => {
+  const spot = { ...start }
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    const taken = nodes.some(
+      (node) =>
+        Math.abs(node.position.x - spot.x) < 40 &&
+        Math.abs(node.position.y - spot.y) < 40,
+    )
+    if (!taken) {
+      break
+    }
+    spot.x += 48
+    spot.y += 48
+  }
+  return spot
+}
+
 const countByPrefix = (nodes: FlowNode[], prefix: string) =>
   nodes.filter((node) => String(node.data?.name ?? "").startsWith(prefix))
     .length
@@ -196,12 +214,10 @@ export function createGaioBlock(
       name: `${item.name} #${countByPrefix(nodes, item.name) + 1}`,
     },
     nodeProps: {
-      position:
-        position ??
-        reactFlow.screenToFlowPosition({
-          x: window.innerWidth / 2 - 150,
-          y: window.innerHeight / 2 - 120,
-        }),
+      position: position ?? freeSpotNear(nodes, reactFlow.screenToFlowPosition({
+        x: window.innerWidth / 2 - 150,
+        y: window.innerHeight / 2 - 120,
+      })),
     },
   }) as FlowNode
   const details = node.data.details as Record<string, unknown> & {
@@ -211,10 +227,10 @@ export function createGaioBlock(
     details.steps = [...(details.steps as unknown[]), ...stepDefaults]
   }
   if (item.nodeType === nodeTypeSchema.enum.sendMessage && details.beforeStep) {
-    const channel = flowChannel(nodes)
-    if (channel) {
-      details.beforeStep = { ...details.beforeStep, channel }
-    }
+    // Like Gaio, a new Mensagem block sends on Instagram unless the flow
+    // already uses another channel.
+    const channel = flowChannel(nodes) ?? "instagram"
+    details.beforeStep = { ...details.beforeStep, channel }
   }
   reactFlow.addNodes([node])
   return node

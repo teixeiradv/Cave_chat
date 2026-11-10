@@ -21,20 +21,29 @@ export function CreateIgCommentForm({
   workspaceId,
   variant,
   isLive,
+  presetFlowId,
+  presetName,
+  returnTo,
 }: {
   workspaceId: string
   variant: IgCommentVariant
   isLive: boolean
+  presetFlowId?: string
+  presetName?: string
+  returnTo?: string
 }) {
+  const doneHref = returnTo ?? `/space/${workspaceId}/ig-comments`
   const t = useTranslations()
   const router = useRouter()
 
   const defaultValues = {
-    name: "",
+    name: presetName ?? "",
     type: variant,
     folderId: undefined,
     post: initialCommentPost(isLive),
-    privateReply: { type: "text" as const, value: "" },
+    privateReply: presetFlowId
+      ? { type: "flow" as const, value: presetFlowId }
+      : { type: "text" as const, value: "" },
     publicReply: {
       type: "none" as const,
       value: null,
@@ -79,7 +88,7 @@ export function CreateIgCommentForm({
               feature: t("instagramCommentAutomation.title"),
             }),
           )
-          router.push(`/space/${workspaceId}/ig-comments`)
+          router.push(doneHref)
         },
         onError: ({ error }) => {
           if (error.serverError) {
@@ -103,7 +112,7 @@ export function CreateIgCommentForm({
       <IgCommentForm
         form={typedForm}
         isSubmitting={form.formState.isSubmitting}
-        onCancel={() => router.push(`/space/${workspaceId}/ig-comments`)}
+        onCancel={() => router.push(doneHref)}
         onSubmit={handleSubmitWithAction}
         submitLabel={t("actions.create")}
         variant={variant}
