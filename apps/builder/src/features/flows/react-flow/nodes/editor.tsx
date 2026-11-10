@@ -210,6 +210,30 @@ const gaioContentMenu = (): MenuItem[] => [
   { label: "PDF", icon: FileTextIcon, stepType: stepTypes.enum.sendFile },
 ]
 
+/** Gaio names each content element of a block in its panel. */
+const GAIO_STEP_LABELS: Record<string, string> = {
+  [stepTypes.enum.sendText]: "Mensagem",
+  [stepTypes.enum.getUserData]: "Pergunta",
+  [stepTypes.enum.sendImage]: "Imagem",
+  [stepTypes.enum.sendMultipleImages]: "Galeria",
+  [stepTypes.enum.sendGif]: "GIF",
+  [stepTypes.enum.sendVideo]: "Vídeo",
+  [stepTypes.enum.sendAudio]: "Áudio",
+  [stepTypes.enum.sendFile]: "PDF / arquivo",
+  [stepTypes.enum.sendCarousel]: "Cartões",
+  [stepTypes.enum.typing]: "Aguardar (antes da próxima mensagem)",
+  [stepTypes.enum.wait]: "Aguardar",
+}
+
+const GaioStepLabel = ({ stepType }: { stepType: string }) => {
+  const label = GAIO_STEP_LABELS[stepType]
+  return label ? (
+    <p className="mb-1.5 font-medium text-muted-foreground text-xs uppercase tracking-wide">
+      {label}
+    </p>
+  ) : null
+}
+
 const collectStepTypes = (items: MenuItem[]): Set<string> => {
   const found = new Set<string>()
   const walk = (list: MenuItem[]) => {
@@ -565,6 +589,10 @@ export const NodeEditor = memo((props: NodeEditorProps) => {
                         )
                       })()}
                       <div className={cn("break-word flex-1 overflow-hidden")}>
+                        <GaioStepLabel
+                          // biome-ignore lint/suspicious/noExplicitAny: wip
+                          stepType={(field as any).stepType}
+                        />
                         <DynamicStepEditor
                           key={field.id}
                           parentName={`steps.${index}`}

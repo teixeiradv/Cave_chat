@@ -110,12 +110,14 @@ export function QuickReplySettingsDialog() {
       <Button
         aria-label={t("flows.quickReplySettings.open")}
         onClick={() => setOpen(true)}
-        size="icon"
+        size="sm"
         title={t("flows.quickReplySettings.open")}
         type="button"
-        variant="ghost"
+        variant="outline"
       >
         <SettingsIcon />
+        {/* CaveChat: visible like Gaio, not just a gear. */}
+        Esperar o clique por / sem resposta
       </Button>
 
       <Dialog onOpenChange={setOpen} open={open}>
