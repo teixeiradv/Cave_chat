@@ -208,7 +208,7 @@ The `<identifier>` parameter (`packages/business/src/contact/utils.ts` `parseCon
 ```bash
 # Basic CRUD
 chatbotx contacts list                               # [--page --perPage --sort --keyword --contactFilter]
-chatbotx contacts create --email <email>             # [--phoneNumber --contactId --firstName --lastName]
+chatbotx contacts create --email <email>             # [--phoneNumber --sourceUserId --contactId --firstName --lastName]  (WhatsApp: a phone number, a BSUID in --sourceUserId, or both)
 chatbotx contacts count                              # Count matching filter [--page --perPage --sort --keyword --contactFilter]
 chatbotx contacts get <identifier>
 chatbotx contacts update <identifier>
@@ -328,6 +328,12 @@ chatbotx conversations messages update <conversationId> <messageId> --createdAt 
                                                      #  --newAttachmentName --newAttachmentSize --removeAttachment]
 chatbotx conversations message delete <conversationId> <messageId> --createdAt <createdAt>
 chatbotx conversations attribute add <conversationId> <messageId> --createdAt <createdAt>  # [--liked --hidden]
+
+# Appointment booking link (scope `appointments`; `--send true` also needs `inbox`)
+chatbotx conversations appointment-booking-link add <conversationId> --calendarId <calendarId>
+                                                     # [--inboxId --send --bypassThreadControlLock]
+                                                     # Returns {url, expiresAt (24 hours), calendar, messageId};
+                                                     # --send true also sends it as a message with a booking button
 ```
 
 ---
@@ -758,7 +764,8 @@ chatbotx appointment-reminders list                   # [--page --perPage --stat
 chatbotx appointments list                            # [--calendarId --tab --search --page --perPage]
 chatbotx appointments get <id>
 chatbotx appointments create --calendarId <calendarId> --contactId <contactId> --startAt <startAt> --inviteeTimezone <inviteeTimezone>
-                                                       # [--conversationId]  (book appointment)
+                                                       # [--conversationId --inboxId]  (book appointment)
+                                                       # --inboxId (needs --conversationId) also sends the calendar's confirmation flow
 chatbotx appointments cancel add <id>
 chatbotx appointments delete <id>
 ```
@@ -1072,8 +1079,10 @@ chatbotx inboxes history list <inboxId>                   # [--page --perPage]
 ### Conversation thread control (scope `inbox`)
 
 ```bash
-chatbotx conversations thread-control add <id> --contactInboxId <id> --action take|release|pass|sync
+chatbotx conversations thread-control add <id> --contactInboxId <id> --action take|release|pass|sync [--targetRole ai_agent|ctwa|customer_service|escalation|marketing|utility] [--metadata <note>]
 # --action sync only refreshes the stored thread owner from the channel
+# --targetRole is for pass only (omit it, or escalation, to hand over to the escalation partner)
+# --metadata is a note (max 2000 chars) delivered verbatim to the receiving app, for take and pass only
 ```
 
 ### `workspace` settings (scope `settings`)
@@ -1109,6 +1118,8 @@ chatbotx whatsapp-channels list|get <id>              # Same data per channel; a
 chatbotx whatsapp-channels handover-resume-flow update <id> --handoverResumeFlowId <flowId|null>
 chatbotx whatsapp-channels routing-roles list <id>    # This app's Conversation Routing roles as last checked (null = never)
 chatbotx whatsapp-channels routing-roles sync <id>    # Ask Meta again (GET routing_roles) and store the answer
+chatbotx whatsapp-channels payment-settings list <id>   # Whether Pix payment-request buttons are sent with redirect (APPSWITCH)
+chatbotx whatsapp-channels payment-settings update <id> --pixRedirectEnabled <true|false>   # Only after Meta has onboarded the business
 ```
 
 ### `messenger-channels`

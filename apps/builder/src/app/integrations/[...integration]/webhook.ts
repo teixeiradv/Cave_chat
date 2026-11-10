@@ -201,11 +201,7 @@ const createCredentialScopedQueue = (
         return
       }
 
-      return await (integrationQueue as unknown as ContextQueue).add(
-        name,
-        payload,
-        options,
-      )
+      return await addRouteScopedJob(name, payload, options, routeScope)
     },
   }
 }
@@ -339,6 +335,7 @@ export const handleWebhook = async (
       credential = await platformCredentialService.findDecryptedForUser({
         userId: tenant.ownerId,
         type,
+        requireOwnCredential: true,
       })
       customDomainOwnerId = tenant.ownerId
     }
@@ -631,7 +628,8 @@ const handleTiktokWebhook = async (req: NextRequest, credentialId?: string) => {
     const result = await integration.handleRequest({
       config: tiktokConfig,
       req: reqWithBody,
-      queue: integrationQueue,
+      // Routed through `enqueueIntegrationJob` so echoes reach the `low` queue.
+      queue: createRouteScopedQueue(undefined),
     })
 
     return new Response(result as BodyInit)

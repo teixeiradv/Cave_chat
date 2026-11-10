@@ -3249,7 +3249,9 @@
       "removeHint": "Menghapus item terbuka terbaru milik kontak di pipeline ini.",
       "comment": "Komentar",
       "destinationPipeline": "Pipeline tujuan",
-      "destinationStage": "Tahap tujuan"
+      "destinationStage": "Tahap tujuan",
+      "missingRequiredFields": "Kolom wajib tanpa nilai: {names}. Item tidak dapat dibuat sampai setiap kolom memiliki nilai.",
+      "addRequiredFields": "Tambahkan kolom wajib"
     },
     "aiSegmentImage": {
       "label": "{name}: Segmentasi gambar"
@@ -4487,6 +4489,9 @@
     "waTemplateMpmTooManySections": "Tombol multi-produk dapat memiliki maksimal 10 bagian. Hapus beberapa bagian sebelum memublikasikan.",
     "waTemplateMpmTooManyProducts": "Tombol multi-produk dapat memiliki maksimal total 30 produk. Hapus beberapa produk sebelum memublikasikan.",
     "waTemplateLtoExpirationRequired": "Pilih tanggal berakhir untuk penawaran waktu terbatas sebelum mengirim.",
+    "waTemplatePaymentRequestIncomplete": "Isi detail pembayaran tombol ini sebelum memublikasikan.",
+    "waTemplatePaymentRequestInvalid": "Format detail pembayaran tidak valid. Periksa jumlah, tautan, dan digit kartu.",
+    "waTemplatePaymentRequestMisplaced": "Detail pembayaran hanya dapat diatur pada tombol pembayaran templat biasa (bukan carousel).",
     "waTemplateMpmIncompleteProducts": "Setiap bagian membutuhkan minimal satu produk terpilih — hapus baris kosong atau pilih produknya.",
     "unsupportedBlock": "Saluran ini tidak mendukung blok ini.",
     "constraintExceeded": "Batas saluran ini telah terlampaui.",
@@ -4550,7 +4555,21 @@
     "tooManySavedReplyImages": "Balasan tersimpan dapat memiliki maksimal {max} gambar",
     "savedReplyImagesNotSentHere": "Gambar tidak akan dikirim di sini",
     "invalidPhoneNumber": "Ini bukan nomor telepon yang valid. Sertakan kode negara, misalnya +1.",
-    "buttonCallPhoneNumberUnsupported": "Tombol ini tidak dapat menelepon nomor di sini. Pilih tindakan lain."
+    "buttonCallPhoneNumberUnsupported": "Tombol ini tidak dapat menelepon nomor di sini. Pilih tindakan lain.",
+    "paymentRequest": {
+      "title": "Permintaan pembayaran",
+      "cardEnding": "Kartu berakhiran {lastFourDigits}",
+      "status": "WhatsApp tidak melaporkan pembayaran. Periksa di penyedia pembayaran Anda.",
+      "cardStatus": "Konfirmasi pelanggan tidak menagih kartu. Tagih melalui penyedia pembayaran Anda.",
+      "sentFromTemplate": "Templat: {name}"
+    },
+    "paymentConfirmation": {
+      "title": "Pelanggan mengonfirmasi pembayaran",
+      "cardTitle": "Pelanggan mengonfirmasi pembayaran kartu",
+      "cardEnding": "Kartu berakhiran {lastFourDigits}",
+      "notCharged": "Belum ditagih. Tagih melalui penyedia pembayaran Anda.",
+      "reference": "Referensi {referenceId}"
+    }
   },
   "instagram": {
     "description": "Integrasi ini memungkinkan Anda membuat bot Instagram.",
@@ -5122,7 +5141,28 @@
         "mpmSectionLimitReached": "Maksimum 10 bagian tercapai.",
         "mpmProductLimitReached": "Maksimum 30 produk tercapai.",
         "mpmProductsSummary": "{productCount} produk dalam {sectionCount} bagian",
-        "unsupportedButtonParam": "Jenis tombol ini belum didukung."
+        "unsupportedButtonParam": "Jenis tombol ini belum didukung.",
+        "payment": {
+          "method": {
+            "pix": "Pix",
+            "boleto": "Boleto",
+            "payment_link": "Tautan pembayaran",
+            "card_on_file": "Pembayaran kartu satu klik"
+          },
+          "field": {
+            "code": "Kode Pix",
+            "digitableLine": "Baris digitabel Boleto",
+            "url": "URL tautan pembayaran",
+            "lastFourDigits": "4 digit terakhir kartu",
+            "credentialId": "ID kredensial kartu (opsional)",
+            "amount": "Jumlah dalam BRL, mis. 12.34"
+          },
+          "notice": {
+            "general": "Gunakan variabel agar setiap pelanggan mendapat detail pembayarannya sendiri.",
+            "cardOnFile": "Pembayaran kartu satu klik hanya berfungsi untuk bisnis yang diaktifkan Meta."
+          },
+          "unsupportedButton": "Templat ini punya tombol pembayaran yang tidak dapat dikirim: jenis pembayarannya tidak dapat ditentukan. Sinkronkan ulang templat atau pilih yang lain."
+        }
       }
     },
     "sampleBodyCardContent": {
@@ -5537,7 +5577,16 @@
     },
     "credentialSecretsRequired": "Masukkan app secret dan system user token. Keduanya belum tersimpan.",
     "embeddedSignupCancelled": "Pendaftaran dibatalkan — Anda dapat menutup tab ini.",
-    "embeddedSignupFailed": "Pendaftaran belum selesai — tutup tab ini dan coba lagi."
+    "embeddedSignupFailed": "Pendaftaran belum selesai — tutup tab ini dan coba lagi.",
+    "payment": {
+      "settings": {
+        "title": "Pembayaran",
+        "description": "Cara nomor ini mengirim tombol permintaan pembayaran.",
+        "pixRedirectLabel": "Kirim Pix dengan pengalihan",
+        "pixRedirectDescription": "Pembeli membuka aplikasi bank untuk membayar lalu kembali ke WhatsApp. Aktifkan hanya setelah Meta mengonboarding bisnis Anda; pembeli yang tidak bisa dialihkan tetap mendapat salin dan tempel.",
+        "adminOnly": "Hanya admin ruang kerja yang dapat mengubah pengaturan pembayaran."
+      }
+    }
   },
   "zalo": {
     "title": "Zalo OA",
@@ -8199,6 +8248,7 @@
       "invalidTokenTitle": "Tautan pemesanan ini tidak tersedia.",
       "invalidTokenDescription": "Tautan mungkin tidak valid atau sudah kedaluwarsa. Silakan minta tautan pemesanan baru.",
       "staleSlot": "Waktu ini sudah tidak tersedia. Silakan pilih waktu lain.",
+      "alreadyScheduled": "Kontak ini sudah memiliki janji temu pada waktu ini di kalender ini. Silakan pilih waktu lain.",
       "availabilityChanged": "Ketersediaan berubah saat Anda memilih waktu. Silakan pilih lagi.",
       "submitFailed": "Kami tidak dapat menyelesaikan permintaan ini. Silakan coba lagi."
     },
@@ -8288,6 +8338,15 @@
     },
     "messages": {
       "empty": "Belum ada janji temu."
+    },
+    "actions": {
+      "create": "Buat janji temu"
+    },
+    "create": {
+      "title": "Buat janji temu",
+      "description": "Pilih kalender dan waktu yang tersedia untuk memesan bagi kontak ini.",
+      "noConversationHint": "Tidak ada percakapan yang terbuka, jadi kontak tidak akan menerima pesan konfirmasi.",
+      "success": "Janji temu dibuat."
     }
   },
   "appointmentManagement": {
@@ -9546,14 +9605,18 @@
     "release": {
       "label": "Lepaskan",
       "tooltip": "Lepaskan percakapan ini agar aplikasi lain dapat menjawab",
-      "success": "Percakapan dilepaskan"
+      "success": "Percakapan dilepaskan",
+      "menu": "Lepaskan atau serahkan"
     },
     "pass": {
-      "menuItem": "Teruskan ke eskalasi",
-      "title": "Teruskan ke mitra eskalasi?",
-      "description": "Serahkan percakapan ini ke mitra eskalasi Anda? Balasan Anda akan dijeda hingga percakapan kembali.",
+      "menuItem": "Serahkan ke mitra",
+      "title": "Serahkan ke mitra?",
+      "description": "Pilih siapa yang mengambil alih percakapan ini. Balasan Anda dijeda sampai percakapan kembali.",
       "confirm": "Teruskan",
-      "success": "Percakapan diteruskan ke mitra eskalasi"
+      "success": "Percakapan diteruskan ke mitra eskalasi",
+      "targetLabel": "Serahkan ke",
+      "noteLabel": "Catatan untuk mitra penerima",
+      "successTargeted": "Percakapan diserahkan ke {role}"
     },
     "aiHandover": {
       "label": "BizAI",
@@ -9572,7 +9635,10 @@
       "notEscalation": "Hanya mitra eskalasi yang dapat mengambil alih. Perutean diatur di Meta Business Suite.",
       "notPrimaryReceiver": "Aplikasi ini harus menjadi penerima utama Halaman untuk dapat mengambil alih. Atur di pengaturan Handover Protocol Halaman.",
       "learnMore": "Pelajari lebih lanjut",
-      "dismiss": "Kirim saja"
+      "dismiss": "Kirim saja",
+      "takeOverTitle": "Ambil alih percakapan ini?",
+      "takeOverDescription": "Mitra berhenti menanganinya dan Anda mengambil kendali. Anda dapat meninggalkan catatan untuknya.",
+      "takeOverNoteLabel": "Catatan untuk mitra saat ini"
     },
     "divider": {
       "ownerHandling": "{owner} kini menangani percakapan ini",
@@ -9645,8 +9711,12 @@
     "step": {
       "action": "Aksi",
       "release": "Lepaskan percakapan",
-      "pass": "Teruskan ke mitra eskalasi",
-      "helper": "Hanya WhatsApp. Di kanal lain, atau saat percakapan tidak dimiliki di sini, langkah mengikuti jalur Error."
+      "pass": "Serahkan ke mitra",
+      "helper": "Hanya WhatsApp. Di kanal lain, atau saat percakapan tidak dimiliki di sini, langkah mengikuti jalur Error.",
+      "targetRole": "Serahkan ke",
+      "targetRoleDefault": "Mitra eskalasi (default)",
+      "metadata": "Catatan serah terima",
+      "metadataHelper": "Opsional. Dikirim apa adanya ke aplikasi yang menerima percakapan. Variabel didukung. Maksimal {max} karakter."
     },
     "template": {
       "sent": "Template terkirim"
@@ -11735,5 +11805,18 @@
     "accessRemoved": "The provider removed access to this account. Reconnect to resume.",
     "needsReconnect": "Reconnect required.",
     "inactive": "This channel is inactive."
+  },
+  "inbox": {
+    "createAppointment": {
+      "title": "Buat Janji Temu",
+      "description": "Kirim tautan pemesanan kalender ke kontak, atau buka untuk memesan atas nama mereka.",
+      "inactive": "Tidak aktif",
+      "sendLink": "Kirim Tautan Kalender",
+      "goToLink": "Buka Tautan Kalender",
+      "sent": "Tautan pemesanan terkirim.",
+      "failed": "Tidak dapat membuat tautan pemesanan.",
+      "noCalendars": "Belum ada kalender janji temu.",
+      "manageCalendars": "Kelola kalender janji temu"
+    }
   }
 }

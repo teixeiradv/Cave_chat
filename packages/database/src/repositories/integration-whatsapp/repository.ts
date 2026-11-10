@@ -203,7 +203,7 @@ const providerAccountScopeFilter = (
         sql`NOT (${isManualIntegration})`,
         connectedThroughApp(
           scope.appId,
-          sql`NOT EXISTS (SELECT 1 FROM ${platformCredentialModel} WHERE ${platformCredentialModel.userId} = ${credentialOwnerId} AND ${platformCredentialModel.type} = 'whatsapp' AND ${platformCredentialModel.usePlatformCredential} = false AND ${platformCredentialModel.livemode} = false)`,
+          sql`NOT EXISTS (SELECT 1 FROM ${platformCredentialModel} WHERE ${platformCredentialModel.userId} = ${credentialOwnerId} AND ${platformCredentialModel.type} = 'whatsapp' AND ${platformCredentialModel.usePlatformCredential} = false)`,
         ),
       )
     default: {
@@ -893,6 +893,20 @@ class IntegrationWhatsappRepository {
       .update(integrationWhatsappModel)
       .set({ callRecordingEnabled: input.enabled })
       .where(workspaceIntegrationFilter(input))
+  }
+
+  /** Sets the Pix-with-redirect send policy; `null` when the number is not in this workspace. */
+  async updatePixRedirectEnabled(
+    input: WorkspaceIntegrationRef & { enabled: boolean },
+    tx: DatabaseClient = db,
+  ): Promise<IntegrationWhatsappModel | null> {
+    const [row] = await tx
+      .update(integrationWhatsappModel)
+      .set({ pixRedirectEnabled: input.enabled })
+      .where(workspaceIntegrationFilter(input))
+      .returning()
+
+    return row ?? null
   }
 
   /** Updates recording/retention/transcription settings for a number (Calls card). */

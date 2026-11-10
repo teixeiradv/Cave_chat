@@ -881,6 +881,17 @@ describe("receiveMessage — message repository branch", () => {
     mockMarkReadByOutbound.mockResolvedValue(true)
   })
 
+  test("skips without failing the job when the channel parser returns nothing to store", async () => {
+    mockRunChannelHandler.mockResolvedValue(null)
+
+    await expect(receiveMessage(baseProps)).resolves.toBeNull()
+
+    expect(mockFindContactInbox).not.toHaveBeenCalled()
+    expect(mockCreateOrUpdate).not.toHaveBeenCalled()
+    expect(mockCreateOrUpdateWithAttachments).not.toHaveBeenCalled()
+    expect(mockEmit).not.toHaveBeenCalled()
+  })
+
   test("calls repository.createOrUpdate() when message has no attachments", async () => {
     mockRunChannelHandler.mockResolvedValue({
       message: { ...baseIncomingMessage, attachments: [] },
@@ -936,6 +947,63 @@ describe("receiveMessage — message repository branch", () => {
     await receiveMessage(baseProps)
 
     expect(mockAwardInboundMessageLeaderboard).not.toHaveBeenCalled()
+  })
+
+  describe("one-click payment confirmation redelivery", () => {
+    const paymentEntity = {
+      type: "whatsapp_payment_method",
+      paymentMethod: "offsite_card_pay",
+      lastFourDigits: "5235",
+      credentialId: "cred-1",
+      raw: { payment_method: "offsite_card_pay" },
+    }
+
+    const deliverPayment = (isNew: boolean) => {
+      mockCreateOrUpdate.mockResolvedValue({
+        message: { ...fakeCreatedMessage, contentAttributes: paymentEntity },
+        isNew,
+      })
+      mockRunChannelHandler.mockResolvedValue({
+        message: {
+          ...baseIncomingMessage,
+          text: "Customer confirmed card payment ending 5235 (not charged yet)",
+          contentAttributes: paymentEntity,
+          attachments: [],
+        },
+        contact: { sourceId: "psid-123", firstName: "Test" },
+        postbackAction: null,
+        quickReplyAction: null,
+        ref: null,
+      })
+    }
+
+    test("is stored once, keyed by the Meta message id, with its structured entity", async () => {
+      deliverPayment(true)
+
+      await receiveMessage(baseProps)
+
+      expect(mockCreateOrUpdate).toHaveBeenCalledTimes(1)
+      expect(mockCreateOrUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sourceId: "msg-src-1",
+          contentAttributes: paymentEntity,
+        }),
+      )
+    })
+
+    test("a Meta retry of the same webhook is not treated as a new message", async () => {
+      deliverPayment(true)
+      await receiveMessage(baseProps)
+      mockAwardInboundMessageLeaderboard.mockClear()
+
+      deliverPayment(false)
+      await receiveMessage(baseProps)
+
+      expect(mockCreateOrUpdate).toHaveBeenLastCalledWith(
+        expect.objectContaining({ sourceId: "msg-src-1" }),
+      )
+      expect(mockAwardInboundMessageLeaderboard).not.toHaveBeenCalled()
+    })
   })
 
   describe("Google click referral persistence", () => {

@@ -3405,7 +3405,9 @@
       "removeHint": "Kişinin bu işlem hattındaki en son açık öğesini siler.",
       "comment": "Yorum",
       "destinationPipeline": "Hedef işlem hattı",
-      "destinationStage": "Hedef aşama"
+      "destinationStage": "Hedef aşama",
+      "missingRequiredFields": "Değeri olmayan zorunlu alanlar: {names}. Her birinin değeri olana kadar öğe oluşturulamaz.",
+      "addRequiredFields": "Zorunlu alanları ekle"
     },
     "aiSegmentImage": {
       "label": "{name}: Görüntüyü segmentlere ayır"
@@ -4487,6 +4489,9 @@
     "waTemplateMpmTooManySections": "Çoklu ürün butonunda en fazla 10 bölüm olabilir. Yayınlamadan önce bazı bölümleri kaldırın.",
     "waTemplateMpmTooManyProducts": "Çoklu ürün butonunda toplamda en fazla 30 ürün olabilir. Yayınlamadan önce bazı ürünleri kaldırın.",
     "waTemplateLtoExpirationRequired": "Göndermeden önce sınırlı süreli teklif için bir bitiş tarihi seçin.",
+    "waTemplatePaymentRequestIncomplete": "Yayınlamadan önce bu düğmenin ödeme bilgilerini doldurun.",
+    "waTemplatePaymentRequestInvalid": "Bir ödeme bilgisinin biçimi geçersiz. Tutarı, bağlantıyı ve kart hanelerini kontrol edin.",
+    "waTemplatePaymentRequestMisplaced": "Ödeme bilgileri yalnızca normal (carousel olmayan) bir şablonun ödeme düğmesinde ayarlanabilir.",
     "waTemplateMpmIncompleteProducts": "Her bölümde en az bir seçili ürün olmalı — boş satırları silin veya onlara ürün seçin.",
     "unsupportedBlock": "Bu kanal bu bloğu desteklemiyor.",
     "constraintExceeded": "Bu kanalın sınırı aşıldı.",
@@ -4550,7 +4555,21 @@
     "tooManySavedReplyImages": "Kayıtlı bir yanıtta en fazla {max} görsel olabilir",
     "savedReplyImagesNotSentHere": "Görseller burada gönderilmeyecek",
     "invalidPhoneNumber": "Bu geçerli bir telefon numarası değil. Ülke kodunu ekleyin, örneğin +1.",
-    "buttonCallPhoneNumberUnsupported": "Bu düğme burada bir telefon numarasını arayamaz. Başka bir eylem seçin."
+    "buttonCallPhoneNumberUnsupported": "Bu düğme burada bir telefon numarasını arayamaz. Başka bir eylem seçin.",
+    "paymentRequest": {
+      "title": "Ödeme talebi",
+      "cardEnding": "{lastFourDigits} ile biten kart",
+      "status": "WhatsApp ödemeyi bildirmez. Ödeme sağlayıcınızdan kontrol edin.",
+      "cardStatus": "Müşterinin onayı karttan tahsilat yapmaz. Ödeme sağlayıcınız üzerinden tahsil edin.",
+      "sentFromTemplate": "Şablon: {name}"
+    },
+    "paymentConfirmation": {
+      "title": "Müşteri ödemeyi onayladı",
+      "cardTitle": "Müşteri kartla ödemeyi onayladı",
+      "cardEnding": "{lastFourDigits} ile biten kart",
+      "notCharged": "Henüz tahsil edilmedi. Ödeme sağlayıcınız üzerinden tahsil edin.",
+      "reference": "Referans {referenceId}"
+    }
   },
   "instagram": {
     "description": "Bu entegrasyon, Instagram botları oluşturmanızı sağlar.",
@@ -5122,7 +5141,28 @@
         "mpmSectionLimitReached": "En fazla 10 bölüm sınırına ulaşıldı.",
         "mpmProductLimitReached": "En fazla 30 ürün sınırına ulaşıldı.",
         "mpmProductsSummary": "{sectionCount} bölümde {productCount} ürün",
-        "unsupportedButtonParam": "Bu buton türü henüz desteklenmiyor."
+        "unsupportedButtonParam": "Bu buton türü henüz desteklenmiyor.",
+        "payment": {
+          "method": {
+            "pix": "Pix",
+            "boleto": "Boleto",
+            "payment_link": "Ödeme bağlantısı",
+            "card_on_file": "Tek tıkla kartlı ödeme"
+          },
+          "field": {
+            "code": "Pix kodu",
+            "digitableLine": "Boleto satırı",
+            "url": "Ödeme bağlantısı URL'si",
+            "lastFourDigits": "Kartın son 4 hanesi",
+            "credentialId": "Kart kimlik bilgisi ID'si (isteğe bağlı)",
+            "amount": "BRL cinsinden tutar, ör. 12.34"
+          },
+          "notice": {
+            "general": "Her müşterinin kendi ödeme bilgilerini alması için bir değişken kullanın.",
+            "cardOnFile": "Tek tıkla kartlı ödeme yalnızca Meta'nın etkinleştirdiği işletmelerde çalışır."
+          },
+          "unsupportedButton": "Bu şablonda gönderilemeyen bir ödeme düğmesi var: ödeme türü belirlenemedi. Şablonları yeniden senkronize edin veya başka bir şablon seçin."
+        }
       }
     },
     "sampleBodyCardContent": {
@@ -5537,7 +5577,16 @@
     },
     "credentialSecretsRequired": "Uygulama sırrını ve sistem kullanıcısı jetonunu girin. Henüz kaydedilmediler.",
     "embeddedSignupCancelled": "Kayıt iptal edildi — bu sekmeyi kapatabilirsiniz.",
-    "embeddedSignupFailed": "Kayıt tamamlanmadı — bu sekmeyi kapatıp tekrar deneyin."
+    "embeddedSignupFailed": "Kayıt tamamlanmadı — bu sekmeyi kapatıp tekrar deneyin.",
+    "payment": {
+      "settings": {
+        "title": "Ödemeler",
+        "description": "Bu numaranın ödeme isteği düğmelerini nasıl gönderdiği.",
+        "pixRedirectLabel": "Pix'i yönlendirmeyle gönder",
+        "pixRedirectDescription": "Alıcılar ödemek için banka uygulamasını açar ve WhatsApp'a döner. Yalnızca Meta işletmenizi kaydettikten sonra açın; yönlendirilemeyen alıcılar yine kopyala-yapıştır alır.",
+        "adminOnly": "Ödeme ayarlarını yalnızca çalışma alanı yöneticileri değiştirebilir."
+      }
+    }
   },
   "zalo": {
     "title": "Zalo OA",
@@ -8199,6 +8248,7 @@
       "invalidTokenTitle": "Bu randevu bağlantısı kullanılamıyor.",
       "invalidTokenDescription": "Bağlantı geçersiz veya süresi dolmuş olabilir. Lütfen yeni bir randevu bağlantısı isteyin.",
       "staleSlot": "Bu saat artık uygun değil. Lütfen başka bir saat seçin.",
+      "alreadyScheduled": "Bu kişinin bu takvimde bu saatte zaten bir randevusu var. Lütfen başka bir saat seçin.",
       "availabilityChanged": "Saat seçerken uygunluk değişti. Lütfen tekrar seçin.",
       "submitFailed": "Bu isteği tamamlayamadık. Lütfen tekrar deneyin."
     },
@@ -8288,6 +8338,15 @@
     },
     "messages": {
       "empty": "Henüz randevu yok."
+    },
+    "actions": {
+      "create": "Randevu oluştur"
+    },
+    "create": {
+      "title": "Randevu oluştur",
+      "description": "Bu kişi için randevu almak üzere bir takvim ve uygun bir saat seçin.",
+      "noConversationHint": "Açık bir konuşma olmadığından kişi onay mesajı almayacak.",
+      "success": "Randevu oluşturuldu."
     }
   },
   "appointmentManagement": {
@@ -9546,14 +9605,18 @@
     "release": {
       "label": "Bırak",
       "tooltip": "Diğer uygulamaların yanıtlayabilmesi için bu konuşmayı bırakın",
-      "success": "Konuşma bırakıldı"
+      "success": "Konuşma bırakıldı",
+      "menu": "Bırak veya devret"
     },
     "pass": {
-      "menuItem": "Yükseltmeye aktar",
-      "title": "Yükseltme ortağına aktarılsın mı?",
-      "description": "Bu görüşme yükseltme ortağınıza devredilsin mi? Görüşme geri dönene kadar yanıtlarınız duraklatılır.",
+      "menuItem": "Bir ortağa devret",
+      "title": "Bir ortağa devredilsin mi?",
+      "description": "Bu görüşmeyi kimin devralacağını seçin. Görüşme geri dönene kadar yanıtlarınız duraklatılır.",
       "confirm": "Aktar",
-      "success": "Konuşma yükseltme ortağına aktarıldı"
+      "success": "Konuşma yükseltme ortağına aktarıldı",
+      "targetLabel": "Devret",
+      "noteLabel": "Devralan ortak için not",
+      "successTargeted": "Görüşme {role} ortağına devredildi"
     },
     "aiHandover": {
       "label": "BizAI",
@@ -9572,7 +9635,10 @@
       "notEscalation": "Yalnızca yükseltme ortağı devralabilir. Yönlendirme Meta Business Suite'te yapılandırılır.",
       "notPrimaryReceiver": "Devralabilmesi için bu uygulamanın Sayfa'nın birincil alıcısı olması gerekir. Bunu Sayfa'nın Handover Protocol ayarlarından yapın.",
       "learnMore": "Daha fazla bilgi",
-      "dismiss": "Yine de gönder"
+      "dismiss": "Yine de gönder",
+      "takeOverTitle": "Bu görüşme devralınsın mı?",
+      "takeOverDescription": "Ortak görüşmeyi yönetmeyi bırakır ve kontrol sizde olur. Ona bir not bırakabilirsiniz.",
+      "takeOverNoteLabel": "Mevcut ortak için not"
     },
     "divider": {
       "ownerHandling": "{owner} artık bu konuşmayla ilgileniyor",
@@ -9645,8 +9711,12 @@
     "step": {
       "action": "Eylem",
       "release": "Konuşmayı bırak",
-      "pass": "Yükseltme ortağına aktar",
-      "helper": "Yalnızca WhatsApp. Diğer kanallarda veya görüşme burada yönetilmiyorsa adım Hata yolunu izler."
+      "pass": "Bir ortağa devret",
+      "helper": "Yalnızca WhatsApp. Diğer kanallarda veya görüşme burada yönetilmiyorsa adım Hata yolunu izler.",
+      "targetRole": "Devret",
+      "targetRoleDefault": "Yükseltme ortağı (varsayılan)",
+      "metadata": "Devir notu",
+      "metadataHelper": "İsteğe bağlı. Görüşmeyi alan uygulamaya olduğu gibi gönderilir. Değişkenler desteklenir. En fazla {max} karakter."
     },
     "template": {
       "sent": "Şablon gönderildi"
@@ -11735,5 +11805,18 @@
     "accessRemoved": "The provider removed access to this account. Reconnect to resume.",
     "needsReconnect": "Reconnect required.",
     "inactive": "This channel is inactive."
+  },
+  "inbox": {
+    "createAppointment": {
+      "title": "Randevu oluştur",
+      "description": "Kişiye bir takvim için rezervasyon bağlantısı gönderin veya onun adına rezervasyon yapmak için açın.",
+      "inactive": "Pasif",
+      "sendLink": "Takvim bağlantısını gönder",
+      "goToLink": "Takvim bağlantısına git",
+      "sent": "Rezervasyon bağlantısı gönderildi.",
+      "failed": "Rezervasyon bağlantısı oluşturulamadı.",
+      "noCalendars": "Henüz randevu takvimi yok.",
+      "manageCalendars": "Randevu takvimlerini yönet"
+    }
   }
 }

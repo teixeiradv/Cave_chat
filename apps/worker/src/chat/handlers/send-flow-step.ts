@@ -274,6 +274,7 @@ const signBookingButtonIfNeeded = async (props: {
   }
 
   const token = await signAppointmentWebviewToken({
+    source: "flow",
     mode: "book",
     workspaceId: props.workspaceId,
     calendarId: calendar.id,
@@ -493,6 +494,7 @@ export async function sendFlowStep({
   sentByUserId,
   commentAnchor,
   appointmentId,
+  statusBranches,
 }: ChatJobSendFlowStep["data"]) {
   const conversation = await conversationService.findByIdWithContactUnscoped({
     id: conversationId,
@@ -579,6 +581,7 @@ export async function sendFlowStep({
         metadata,
         isBulkBroadcast,
         sentByUserId,
+        statusBranches,
       })
     } catch (error) {
       logger.error(

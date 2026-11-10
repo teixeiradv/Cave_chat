@@ -3249,7 +3249,9 @@
       "removeHint": "Elimina o item aberto mais recente do contacto neste funil.",
       "comment": "Comentário",
       "destinationPipeline": "Funil de destino",
-      "destinationStage": "Fase de destino"
+      "destinationStage": "Fase de destino",
+      "missingRequiredFields": "Campos obrigatórios sem valor: {names}. O item não pode ser criado até cada um ter um valor.",
+      "addRequiredFields": "Adicionar campos obrigatórios"
     },
     "aiSegmentImage": {
       "label": "{name}: Segmentar imagem"
@@ -4487,6 +4489,9 @@
     "waTemplateMpmTooManySections": "Um botão multiproduto pode ter no máximo 10 secções. Remova algumas secções antes de publicar.",
     "waTemplateMpmTooManyProducts": "Um botão multiproduto pode ter no máximo 30 produtos no total. Remova alguns produtos antes de publicar.",
     "waTemplateLtoExpirationRequired": "Escolha uma data de expiração para a oferta por tempo limitado antes de enviar.",
+    "waTemplatePaymentRequestIncomplete": "Preencha os dados de pagamento deste botão antes de publicar.",
+    "waTemplatePaymentRequestInvalid": "Um dado de pagamento tem formato inválido. Verifique o montante, a ligação e os dígitos do cartão.",
+    "waTemplatePaymentRequestMisplaced": "Os dados de pagamento só podem ser definidos num botão de pagamento de um modelo normal (não carrossel).",
     "waTemplateMpmIncompleteProducts": "Cada secção precisa de pelo menos um produto selecionado — remova linhas vazias ou escolha um produto.",
     "unsupportedBlock": "Este canal não suporta este bloco.",
     "constraintExceeded": "O limite deste canal foi excedido.",
@@ -4550,7 +4555,21 @@
     "tooManySavedReplyImages": "Uma resposta guardada pode ter no máximo {max} imagens",
     "savedReplyImagesNotSentHere": "As imagens não serão enviadas aqui",
     "invalidPhoneNumber": "Este não é um número de telefone válido. Inclua o indicativo do país, por exemplo +1.",
-    "buttonCallPhoneNumberUnsupported": "Este botão não pode ligar para um número aqui. Escolha outra ação."
+    "buttonCallPhoneNumberUnsupported": "Este botão não pode ligar para um número aqui. Escolha outra ação.",
+    "paymentRequest": {
+      "title": "Pedido de pagamento",
+      "cardEnding": "Cartão terminado em {lastFourDigits}",
+      "status": "O WhatsApp não comunica o pagamento. Verifique junto do seu prestador de pagamentos.",
+      "cardStatus": "A confirmação do cliente não cobra o cartão. Cobre através do seu prestador de pagamentos.",
+      "sentFromTemplate": "Modelo: {name}"
+    },
+    "paymentConfirmation": {
+      "title": "O cliente confirmou o pagamento",
+      "cardTitle": "O cliente confirmou o pagamento com cartão",
+      "cardEnding": "Cartão terminado em {lastFourDigits}",
+      "notCharged": "Ainda não cobrado. Cobre através do seu prestador de pagamentos.",
+      "reference": "Referência {referenceId}"
+    }
   },
   "instagram": {
     "description": "Esta integração permite-lhe criar bots do Instagram.",
@@ -5122,7 +5141,28 @@
         "mpmSectionLimitReached": "Máximo de 10 secções atingido.",
         "mpmProductLimitReached": "Máximo de 30 produtos atingido.",
         "mpmProductsSummary": "{productCount} produtos em {sectionCount} secções",
-        "unsupportedButtonParam": "Este tipo de botão ainda não é suportado."
+        "unsupportedButtonParam": "Este tipo de botão ainda não é suportado.",
+        "payment": {
+          "method": {
+            "pix": "Pix",
+            "boleto": "Boleto",
+            "payment_link": "Ligação de pagamento",
+            "card_on_file": "Pagamento com cartão num clique"
+          },
+          "field": {
+            "code": "Código Pix",
+            "digitableLine": "Linha digitável do boleto",
+            "url": "URL da ligação de pagamento",
+            "lastFourDigits": "Últimos 4 dígitos do cartão",
+            "credentialId": "ID da credencial do cartão (opcional)",
+            "amount": "Montante em BRL, ex.: 12.34"
+          },
+          "notice": {
+            "general": "Utilize uma variável para que cada cliente receba os seus próprios dados de pagamento.",
+            "cardOnFile": "O pagamento com cartão num clique só funciona para empresas ativadas pela Meta."
+          },
+          "unsupportedButton": "Este modelo tem um botão de pagamento que não pode ser enviado: não foi possível determinar o tipo de pagamento. Sincronize novamente os modelos ou escolha outro."
+        }
       }
     },
     "sampleBodyCardContent": {
@@ -5537,7 +5577,16 @@
     },
     "credentialSecretsRequired": "Introduza o segredo da aplicação e o token de utilizador do sistema. Ainda não estão guardados.",
     "embeddedSignupCancelled": "O registo foi cancelado — pode fechar este separador.",
-    "embeddedSignupFailed": "O registo não foi concluído — feche este separador e tente novamente."
+    "embeddedSignupFailed": "O registo não foi concluído — feche este separador e tente novamente.",
+    "payment": {
+      "settings": {
+        "title": "Pagamentos",
+        "description": "Como este número envia os botões de pedido de pagamento.",
+        "pixRedirectLabel": "Enviar Pix com redirecionamento",
+        "pixRedirectDescription": "O comprador abre a app do banco para pagar e volta ao WhatsApp. Ative só depois de a Meta integrar a sua empresa; quem não pode ser redirecionado continua a receber copiar e colar.",
+        "adminOnly": "Só os administradores do espaço de trabalho podem alterar as definições de pagamento."
+      }
+    }
   },
   "zalo": {
     "title": "Zalo OA",
@@ -8199,6 +8248,7 @@
       "invalidTokenTitle": "Esta ligação de marcação não está disponível.",
       "invalidTokenDescription": "A ligação pode ser inválida ou ter expirado. Peça uma nova ligação de marcação.",
       "staleSlot": "Este horário já não está disponível. Escolha outro horário.",
+      "alreadyScheduled": "Este contacto já tem uma marcação a esta hora neste calendário. Escolha outro horário.",
       "availabilityChanged": "A disponibilidade foi alterada enquanto escolhia um horário. Escolha novamente.",
       "submitFailed": "Não foi possível concluir este pedido. Tente novamente."
     },
@@ -8288,6 +8338,15 @@
     },
     "messages": {
       "empty": "Ainda não existem marcações."
+    },
+    "actions": {
+      "create": "Criar marcação"
+    },
+    "create": {
+      "title": "Criar marcação",
+      "description": "Escolha um calendário e um horário disponível para marcar para este contacto.",
+      "noConversationHint": "Nenhuma conversa está aberta, por isso o contacto não receberá uma mensagem de confirmação.",
+      "success": "Marcação criada."
     }
   },
   "appointmentManagement": {
@@ -9546,14 +9605,18 @@
     "release": {
       "label": "Libertar",
       "tooltip": "Liberte esta conversa para que outras apps possam responder",
-      "success": "Conversa libertada"
+      "success": "Conversa libertada",
+      "menu": "Libertar ou transferir"
     },
     "pass": {
-      "menuItem": "Passar para escalonamento",
-      "title": "Passar para o parceiro de escalonamento?",
-      "description": "Passar esta conversa ao seu parceiro de escalonamento? As suas respostas ficarão em pausa até a conversa regressar.",
+      "menuItem": "Transferir para um parceiro",
+      "title": "Transferir para um parceiro?",
+      "description": "Escolha quem assume esta conversa. As suas respostas ficam em pausa até a conversa voltar.",
       "confirm": "Passar",
-      "success": "Conversa passada ao parceiro de escalonamento"
+      "success": "Conversa passada ao parceiro de escalonamento",
+      "targetLabel": "Transferir para",
+      "noteLabel": "Nota para o parceiro recetor",
+      "successTargeted": "Conversa transferida para {role}"
     },
     "aiHandover": {
       "label": "BizAI",
@@ -9572,7 +9635,10 @@
       "notEscalation": "Apenas o parceiro de escalonamento pode assumir. O encaminhamento é configurado no Meta Business Suite.",
       "notPrimaryReceiver": "Esta app tem de ser o recetor principal da Página para assumir. Defina-o nas definições do Handover Protocol da Página.",
       "learnMore": "Saiba mais",
-      "dismiss": "Enviar mesmo assim"
+      "dismiss": "Enviar mesmo assim",
+      "takeOverTitle": "Assumir esta conversa?",
+      "takeOverDescription": "O parceiro deixa de a tratar e você assume o controlo. Pode deixar uma nota para ele.",
+      "takeOverNoteLabel": "Nota para o parceiro atual"
     },
     "divider": {
       "ownerHandling": "{owner} está agora a tratar desta conversa",
@@ -9645,8 +9711,12 @@
     "step": {
       "action": "Ação",
       "release": "Libertar a conversa",
-      "pass": "Passar para o parceiro de escalonamento",
-      "helper": "Apenas WhatsApp. Noutros canais, ou quando a conversa não é gerida aqui, o passo segue o caminho de erro."
+      "pass": "Transferir para um parceiro",
+      "helper": "Apenas WhatsApp. Noutros canais, ou quando a conversa não é gerida aqui, o passo segue o caminho de erro.",
+      "targetRole": "Transferir para",
+      "targetRoleDefault": "Parceiro de escalamento (predefinição)",
+      "metadata": "Nota de transferência",
+      "metadataHelper": "Opcional. Enviada tal como está à app que recebe a conversa. As variáveis são suportadas. Até {max} caracteres."
     },
     "template": {
       "sent": "Modelo enviado"
@@ -11735,5 +11805,18 @@
     "accessRemoved": "The provider removed access to this account. Reconnect to resume.",
     "needsReconnect": "Reconnect required.",
     "inactive": "This channel is inactive."
+  },
+  "inbox": {
+    "createAppointment": {
+      "title": "Criar marcação",
+      "description": "Envie ao contacto uma ligação de reserva de um calendário ou abra-a para reservar em nome dele.",
+      "inactive": "Inativo",
+      "sendLink": "Enviar ligação do calendário",
+      "goToLink": "Ir para a ligação do calendário",
+      "sent": "Ligação de reserva enviada.",
+      "failed": "Não foi possível criar a ligação de reserva.",
+      "noCalendars": "Ainda não existem calendários de marcações.",
+      "manageCalendars": "Gerir calendários de marcações"
+    }
   }
 }

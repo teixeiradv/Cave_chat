@@ -4087,7 +4087,9 @@
       "removeHint": "Deletes the contact's latest open item in this pipeline.",
       "comment": "Comment",
       "destinationPipeline": "Destination pipeline",
-      "destinationStage": "Destination stage"
+      "destinationStage": "Destination stage",
+      "missingRequiredFields": "Required fields without a value: {names}. The item can't be created until each one has a value.",
+      "addRequiredFields": "Add required fields"
     },
     "aiSegmentImage": {
       "label": "{name}: Segment Image"
@@ -5169,6 +5171,9 @@
     "waTemplateMpmTooManySections": "A multi-product button can have at most 10 sections. Remove some sections before publishing.",
     "waTemplateMpmTooManyProducts": "A multi-product button can have at most 30 products in total. Remove some products before publishing.",
     "waTemplateLtoExpirationRequired": "Pick an expiration date for the limited-time offer before sending.",
+    "waTemplatePaymentRequestIncomplete": "Fill in the payment details of this button before publishing.",
+    "waTemplatePaymentRequestInvalid": "A payment detail has an invalid format. Check the amount, link and card digits.",
+    "waTemplatePaymentRequestMisplaced": "Payment details can only be set on a payment button of a regular (non-carousel) template.",
     "waTemplateMpmIncompleteProducts": "Every section needs at least one selected product — remove empty rows or pick a product for them.",
     "unsupportedBlock": "This channel does not support this block.",
     "constraintExceeded": "This channel limit was exceeded.",
@@ -5232,7 +5237,21 @@
     "tooManySavedReplyImages": "A saved reply can have at most {max} images",
     "savedReplyImagesNotSentHere": "Images won't be sent here",
     "invalidPhoneNumber": "This isn't a valid phone number. Include the country code, for example +1.",
-    "buttonCallPhoneNumberUnsupported": "This button cannot call a phone number here. Choose another action."
+    "buttonCallPhoneNumberUnsupported": "This button cannot call a phone number here. Choose another action.",
+    "paymentRequest": {
+      "title": "Payment request",
+      "cardEnding": "Card ending {lastFourDigits}",
+      "status": "WhatsApp doesn't report payment. Check your payment provider.",
+      "cardStatus": "The customer's confirmation doesn't charge the card. Charge it with your payment provider.",
+      "sentFromTemplate": "Template: {name}"
+    },
+    "paymentConfirmation": {
+      "title": "Customer confirmed the payment",
+      "cardTitle": "Customer confirmed the card payment",
+      "cardEnding": "Card ending {lastFourDigits}",
+      "notCharged": "Not charged yet. Charge it with your payment provider.",
+      "reference": "Reference {referenceId}"
+    }
   },
   "instagram": {
     "description": "This integration lets you create Instagram bots.",
@@ -5804,7 +5823,28 @@
         "mpmSectionLimitReached": "Maximum of 10 sections reached.",
         "mpmProductLimitReached": "Maximum of 30 products reached.",
         "mpmProductsSummary": "{productCount} products in {sectionCount} sections",
-        "unsupportedButtonParam": "This button type isn't supported yet."
+        "unsupportedButtonParam": "This button type isn't supported yet.",
+        "payment": {
+          "method": {
+            "pix": "Pix",
+            "boleto": "Boleto",
+            "payment_link": "Payment link",
+            "card_on_file": "One-click card payment"
+          },
+          "field": {
+            "code": "Pix code",
+            "digitableLine": "Boleto digitable line",
+            "url": "Payment link URL",
+            "lastFourDigits": "Last 4 digits of the card",
+            "credentialId": "Card credential ID (optional)",
+            "amount": "Amount in BRL, e.g. 12.34"
+          },
+          "notice": {
+            "general": "Use a variable so each customer gets their own payment details.",
+            "cardOnFile": "One-click card payment only works for businesses Meta has enabled for it."
+          },
+          "unsupportedButton": "This template has a payment button that cannot be sent: its payment type could not be determined. Re-sync the templates or pick another template."
+        }
       }
     },
     "sampleBodyCardContent": {
@@ -6219,7 +6259,16 @@
     },
     "credentialSecretsRequired": "Enter the app secret and system user token. They aren't stored yet.",
     "embeddedSignupCancelled": "Signup was cancelled — you can close this tab.",
-    "embeddedSignupFailed": "Signup didn't finish — close this tab and try again."
+    "embeddedSignupFailed": "Signup didn't finish — close this tab and try again.",
+    "payment": {
+      "settings": {
+        "title": "Payments",
+        "description": "How this number sends payment request buttons.",
+        "pixRedirectLabel": "Send Pix with redirect",
+        "pixRedirectDescription": "Buyers open their bank app to pay and return to WhatsApp. Turn this on only after Meta has onboarded your business; buyers whose app cannot redirect still get copy and paste.",
+        "adminOnly": "Only workspace admins can change payment settings."
+      }
+    }
   },
   "zalo": {
     "title": "Zalo OA",
@@ -6843,6 +6892,15 @@
     },
     "messages": {
       "empty": "No appointments yet."
+    },
+    "actions": {
+      "create": "Create appointment"
+    },
+    "create": {
+      "title": "Create appointment",
+      "description": "Pick a calendar and an available time to book for this contact.",
+      "noConversationHint": "No conversation is open, so the contact won't receive a confirmation message.",
+      "success": "Appointment created."
     }
   },
   "appointmentManagement": {
@@ -8457,6 +8515,7 @@
       "invalidTokenTitle": "This booking link is unavailable.",
       "invalidTokenDescription": "The link may be invalid or expired. Please ask for a new booking link.",
       "staleSlot": "This time is no longer available. Please choose another time.",
+      "alreadyScheduled": "This contact already has an appointment at this time on this calendar. Please choose another time.",
       "availabilityChanged": "Availability changed while you were choosing a time. Please choose again.",
       "submitFailed": "We couldn't complete this request. Please try again."
     },
@@ -9546,14 +9605,18 @@
     "release": {
       "label": "Release",
       "tooltip": "Release this conversation so other apps can answer",
-      "success": "Conversation released"
+      "success": "Conversation released",
+      "menu": "Release or pass"
     },
     "pass": {
-      "menuItem": "Pass to escalation",
-      "title": "Pass to the escalation partner?",
-      "description": "Hand this conversation to your escalation partner? Your replies will pause until the thread comes back.",
+      "menuItem": "Pass to a partner",
+      "title": "Pass to a partner?",
+      "description": "Choose who takes this conversation over. Your replies pause until the thread comes back.",
       "confirm": "Pass",
-      "success": "Conversation passed to the escalation partner"
+      "success": "Conversation passed to the escalation partner",
+      "targetLabel": "Hand over to",
+      "noteLabel": "Note for the receiving partner",
+      "successTargeted": "Conversation passed to {role}"
     },
     "aiHandover": {
       "label": "BizAI",
@@ -9572,7 +9635,10 @@
       "notEscalation": "Only the escalation partner can take over. Routing is configured in Meta Business Suite.",
       "notPrimaryReceiver": "This app must be the Page's primary receiver to take over. Set it in the Page's Handover Protocol settings.",
       "learnMore": "Learn more",
-      "dismiss": "Send anyway"
+      "dismiss": "Send anyway",
+      "takeOverTitle": "Take over this conversation?",
+      "takeOverDescription": "The partner stops handling it and you take control. You can leave a note for them.",
+      "takeOverNoteLabel": "Note for the current partner"
     },
     "divider": {
       "ownerHandling": "{owner} is now handling this conversation",
@@ -9605,9 +9671,9 @@
       "currentOwner": "Current owner",
       "noOwner": "No owner",
       "roleLabel": "Your role",
-      "selfOwned": "Active — handling the conversation",
-      "selfStandby": "Standby — listening only",
-      "selfIdle": "Idle — waiting",
+      "selfOwned": "Active handling the conversation",
+      "selfStandby": "Standby listening only",
+      "selfIdle": "Idle waiting",
       "hintOwned": "Release when you're done so other apps can answer.",
       "hintStandby": "While a partner is handling this, your messages are held so the customer doesn't get duplicate replies. Take over from the message box to reply.",
       "hintIdle": "The next customer message decides who answers.",
@@ -9645,8 +9711,12 @@
     "step": {
       "action": "Action",
       "release": "Release the conversation",
-      "pass": "Pass to the escalation partner",
-      "helper": "WhatsApp only. On other channels, or when the conversation isn’t owned here, the step follows the Error path."
+      "pass": "Pass to a partner",
+      "helper": "WhatsApp only. On other channels, or when the conversation isn’t owned here, the step follows the Error path.",
+      "targetRole": "Hand over to",
+      "targetRoleDefault": "Escalation partner (default)",
+      "metadata": "Handover note",
+      "metadataHelper": "Optional. Sent as-is to the app that receives the conversation. Variables are supported. Up to {max} characters."
     },
     "template": {
       "sent": "Template sent"
@@ -11735,5 +11805,18 @@
     "accessRemoved": "The provider removed access to this account. Reconnect to resume.",
     "needsReconnect": "Reconnect required.",
     "inactive": "This channel is inactive."
+  },
+  "inbox": {
+    "createAppointment": {
+      "title": "Create Appointment",
+      "description": "Send the contact a booking link for a calendar, or open it to book on their behalf.",
+      "inactive": "Inactive",
+      "sendLink": "Send Calendar Link",
+      "goToLink": "Go to Calendar Link",
+      "sent": "Booking link sent.",
+      "failed": "Couldn't create the booking link.",
+      "noCalendars": "No appointment calendars yet.",
+      "manageCalendars": "Manage appointment calendars"
+    }
   }
 }

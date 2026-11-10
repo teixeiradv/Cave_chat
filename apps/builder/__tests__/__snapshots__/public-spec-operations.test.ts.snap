@@ -573,6 +573,11 @@ exports[`public API spec — operation naming guard > operation list (operationI
     "path": "/v1/appointments/{id}/cancel",
   },
   {
+    "method": "POST",
+    "operationId": "appointments.createBookingLink",
+    "path": "/v1/conversations/{conversationId}/appointment-booking-link",
+  },
+  {
     "method": "DELETE",
     "operationId": "appointments.delete",
     "path": "/v1/appointments/{id}",
@@ -3854,6 +3859,11 @@ exports[`public API spec — operation naming guard > operation list (operationI
   },
   {
     "method": "GET",
+    "operationId": "whatsappChannels.getPaymentSettings",
+    "path": "/v1/whatsapp-channels/{id}/payment-settings",
+  },
+  {
+    "method": "GET",
     "operationId": "whatsappChannels.getRoutingRoles",
     "path": "/v1/whatsapp-channels/{id}/routing-roles",
   },
@@ -3901,6 +3911,11 @@ exports[`public API spec — operation naming guard > operation list (operationI
     "method": "PATCH",
     "operationId": "whatsappChannels.updateHandoverResumeFlow",
     "path": "/v1/whatsapp-channels/{id}/handover-resume-flow",
+  },
+  {
+    "method": "PUT",
+    "operationId": "whatsappChannels.updatePaymentSettings",
+    "path": "/v1/whatsapp-channels/{id}/payment-settings",
   },
   {
     "method": "GET",

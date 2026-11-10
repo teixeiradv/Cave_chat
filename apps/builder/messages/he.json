@@ -897,7 +897,9 @@
       "removeHint": "מוחק את הפריט הפתוח האחרון של איש הקשר בפייפליין זה.",
       "comment": "תגובה",
       "destinationPipeline": "פייפליין יעד",
-      "destinationStage": "שלב יעד"
+      "destinationStage": "שלב יעד",
+      "missingRequiredFields": "שדות חובה ללא ערך: {names}. לא ניתן ליצור את הפריט עד שלכל אחד מהם יהיה ערך.",
+      "addRequiredFields": "הוסף שדות חובה"
     },
     "aiSegmentImage": {
       "label": "{name}: פילוח תמונה"
@@ -2135,6 +2137,9 @@
     "waTemplateMpmTooManySections": "לכפתור רב-מוצרים יכולים להיות עד 10 מקטעים לכל היותר. הסר מקטעים לפני הפרסום.",
     "waTemplateMpmTooManyProducts": "לכפתור רב-מוצרים יכולים להיות עד 30 מוצרים בסך הכל. הסר מוצרים לפני הפרסום.",
     "waTemplateLtoExpirationRequired": "בחרו תאריך תפוגה למבצע המוגבל בזמן לפני השליחה.",
+    "waTemplatePaymentRequestIncomplete": "מלאו את פרטי התשלום של כפתור זה לפני הפרסום.",
+    "waTemplatePaymentRequestInvalid": "לפרט תשלום יש פורמט לא תקין. בדקו את הסכום, הקישור וספרות הכרטיס.",
+    "waTemplatePaymentRequestMisplaced": "ניתן להגדיר פרטי תשלום רק בכפתור תשלום של תבנית רגילה (לא קרוסלה).",
     "waTemplateMpmIncompleteProducts": "כל מקטע צריך לפחות מוצר אחד שנבחר — הסירו שורות ריקות או בחרו להן מוצר.",
     "unsupportedBlock": "הערוץ הזה אינו תומך בבלוק הזה.",
     "constraintExceeded": "חרגת ממגבלת הערוץ.",
@@ -2198,7 +2203,21 @@
     "tooManySavedReplyImages": "תשובה שמורה יכולה לכלול עד {max} תמונות",
     "savedReplyImagesNotSentHere": "התמונות לא יישלחו כאן",
     "invalidPhoneNumber": "זה אינו מספר טלפון תקין. כללו את קידומת המדינה, לדוגמה ‎+1.",
-    "buttonCallPhoneNumberUnsupported": "כפתור זה אינו יכול להתקשר למספר טלפון כאן. בחרו פעולה אחרת."
+    "buttonCallPhoneNumberUnsupported": "כפתור זה אינו יכול להתקשר למספר טלפון כאן. בחרו פעולה אחרת.",
+    "paymentRequest": {
+      "title": "בקשת תשלום",
+      "cardEnding": "כרטיס המסתיים ב-{lastFourDigits}",
+      "status": "WhatsApp לא מדווח על תשלום. בדוק אצל ספק התשלומים שלך.",
+      "cardStatus": "אישור הלקוח אינו מחייב את הכרטיס. חייב דרך ספק התשלומים שלך.",
+      "sentFromTemplate": "תבנית: {name}"
+    },
+    "paymentConfirmation": {
+      "title": "הלקוח אישר את התשלום",
+      "cardTitle": "הלקוח אישר את התשלום בכרטיס",
+      "cardEnding": "כרטיס המסתיים ב-{lastFourDigits}",
+      "notCharged": "עדיין לא חויב. חייב דרך ספק התשלומים שלך.",
+      "reference": "אסמכתה {referenceId}"
+    }
   },
   "instagram": {
     "description": "שילוב זה מאפשר ליצור בוטים ל-Instagram.",
@@ -2770,7 +2789,28 @@
         "mpmSectionLimitReached": "הגעת למקסימום של 10 מקטעים.",
         "mpmProductLimitReached": "הגעת למקסימום של 30 מוצרים.",
         "mpmProductsSummary": "{productCount} מוצרים ב-{sectionCount} מקטעים",
-        "unsupportedButtonParam": "סוג כפתור זה עדיין אינו נתמך."
+        "unsupportedButtonParam": "סוג כפתור זה עדיין אינו נתמך.",
+        "payment": {
+          "method": {
+            "pix": "Pix",
+            "boleto": "Boleto",
+            "payment_link": "קישור תשלום",
+            "card_on_file": "תשלום בכרטיס בלחיצה אחת"
+          },
+          "field": {
+            "code": "קוד Pix",
+            "digitableLine": "שורת Boleto",
+            "url": "כתובת URL של קישור התשלום",
+            "lastFourDigits": "4 הספרות האחרונות של הכרטיס",
+            "credentialId": "מזהה אישור הכרטיס (אופציונלי)",
+            "amount": "סכום ב-BRL, לדוגמה 12.34"
+          },
+          "notice": {
+            "general": "השתמש במשתנה כדי שכל לקוח יקבל פרטי תשלום משלו.",
+            "cardOnFile": "תשלום בכרטיס בלחיצה אחת עובד רק לעסקים ש-Meta הפעילה עבורם."
+          },
+          "unsupportedButton": "בתבנית זו יש כפתור תשלום שלא ניתן לשלוח: לא ניתן היה לקבוע את סוג התשלום. סנכרנו את התבניות מחדש או בחרו תבנית אחרת."
+        }
       }
     },
     "sampleBodyCardContent": {
@@ -3185,7 +3225,16 @@
     },
     "credentialSecretsRequired": "הזינו את סוד האפליקציה ואת אסימון משתמש המערכת. הם עדיין לא נשמרו.",
     "embeddedSignupCancelled": "ההרשמה בוטלה — אפשר לסגור את הכרטיסייה.",
-    "embeddedSignupFailed": "ההרשמה לא הושלמה — סגרו את הכרטיסייה ונסו שוב."
+    "embeddedSignupFailed": "ההרשמה לא הושלמה — סגרו את הכרטיסייה ונסו שוב.",
+    "payment": {
+      "settings": {
+        "title": "תשלומים",
+        "description": "איך המספר הזה שולח כפתורי בקשת תשלום.",
+        "pixRedirectLabel": "שליחת Pix עם הפניה",
+        "pixRedirectDescription": "הקונים פותחים את אפליקציית הבנק לתשלום וחוזרים ל-WhatsApp. הפעילו רק לאחר ש-Meta קלטה את העסק שלכם; קונים שלא ניתן להפנות יקבלו עדיין העתק והדבק.",
+        "adminOnly": "רק מנהלי סביבת העבודה יכולים לשנות הגדרות תשלום."
+      }
+    }
   },
   "zalo": {
     "title": "Zalo OA",
@@ -8199,6 +8248,7 @@
       "invalidTokenTitle": "קישור קביעת הפגישה הזה אינו זמין.",
       "invalidTokenDescription": "ייתכן שהקישור אינו תקין או שפג תוקפו. בקשו קישור קביעת פגישה חדש.",
       "staleSlot": "הזמן הזה כבר אינו זמין. בחרו זמן אחר.",
+      "alreadyScheduled": "לאיש הקשר הזה כבר יש פגישה בשעה הזו ביומן הזה. בחרו זמן אחר.",
       "availabilityChanged": "הזמינות השתנתה בזמן שבחרתם זמן. בחרו שוב.",
       "submitFailed": "לא הצלחנו להשלים את הבקשה הזו. נסו שוב."
     },
@@ -8288,6 +8338,15 @@
     },
     "messages": {
       "empty": "עדיין אין פגישות."
+    },
+    "actions": {
+      "create": "יצירת פגישה"
+    },
+    "create": {
+      "title": "יצירת פגישה",
+      "description": "בחרו יומן ושעה פנויה כדי להזמין עבור איש קשר זה.",
+      "noConversationHint": "אין שיחה פתוחה, ולכן איש הקשר לא יקבל הודעת אישור.",
+      "success": "הפגישה נוצרה."
     }
   },
   "appointmentManagement": {
@@ -9546,14 +9605,18 @@
     "release": {
       "label": "שחרור",
       "tooltip": "שחרר את השיחה כדי שאפליקציות אחרות יוכלו להשיב",
-      "success": "השיחה שוחררה"
+      "success": "השיחה שוחררה",
+      "menu": "שחרור או העברה"
     },
     "pass": {
-      "menuItem": "העבר להסלמה",
-      "title": "להעביר לשותף ההסלמה?",
-      "description": "להעביר את השיחה לשותף ההסלמה שלך? התשובות שלך יושהו עד שהשיחה תחזור.",
+      "menuItem": "העבר לשותף",
+      "title": "להעביר לשותף?",
+      "description": "בחרו מי יטפל בשיחה. התשובות שלכם יושהו עד שהשיחה תחזור.",
       "confirm": "העבר",
-      "success": "השיחה הועברה לשותף ההסלמה"
+      "success": "השיחה הועברה לשותף ההסלמה",
+      "targetLabel": "העבר אל",
+      "noteLabel": "הערה לשותף המקבל",
+      "successTargeted": "השיחה הועברה אל {role}"
     },
     "aiHandover": {
       "label": "BizAI",
@@ -9572,7 +9635,10 @@
       "notEscalation": "רק שותף ההסלמה יכול לקחת שליטה. הניתוב מוגדר ב-Meta Business Suite.",
       "notPrimaryReceiver": "האפליקציה הזו חייבת להיות המקבל הראשי של הדף כדי לקחת שליטה. ניתן להגדיר זאת בהגדרות Handover Protocol של הדף.",
       "learnMore": "למידע נוסף",
-      "dismiss": "שלח בכל זאת"
+      "dismiss": "שלח בכל זאת",
+      "takeOverTitle": "לקחת שליטה בשיחה?",
+      "takeOverDescription": "השותף מפסיק לטפל בה ואתם מקבלים את השליטה. אפשר להשאיר לו הערה.",
+      "takeOverNoteLabel": "הערה לשותף הנוכחי"
     },
     "divider": {
       "ownerHandling": "{owner} מטפל עכשיו בשיחה הזו",
@@ -9645,8 +9711,12 @@
     "step": {
       "action": "פעולה",
       "release": "שחרר את השיחה",
-      "pass": "העבר לשותף ההסלמה",
-      "helper": "וואטסאפ בלבד. בערוצים אחרים, או כשהשיחה אינה בבעלות כאן, השלב ממשיך בנתיב השגיאה."
+      "pass": "העבר לשותף",
+      "helper": "וואטסאפ בלבד. בערוצים אחרים, או כשהשיחה אינה בבעלות כאן, השלב ממשיך בנתיב השגיאה.",
+      "targetRole": "העבר אל",
+      "targetRoleDefault": "שותף הסלמה (ברירת מחדל)",
+      "metadata": "הערת מסירה",
+      "metadataHelper": "אופציונלי. נשלחת כפי שהיא לאפליקציה שמקבלת את השיחה. משתנים נתמכים. עד {max} תווים."
     },
     "template": {
       "sent": "התבנית נשלחה"
@@ -11735,5 +11805,18 @@
     "accessRemoved": "The provider removed access to this account. Reconnect to resume.",
     "needsReconnect": "Reconnect required.",
     "inactive": "This channel is inactive."
+  },
+  "inbox": {
+    "createAppointment": {
+      "title": "יצירת פגישה",
+      "description": "שלחו לאיש הקשר קישור הזמנה ליומן, או פתחו אותו כדי להזמין בשמו.",
+      "inactive": "לא פעיל",
+      "sendLink": "שליחת קישור ליומן",
+      "goToLink": "מעבר לקישור היומן",
+      "sent": "קישור ההזמנה נשלח.",
+      "failed": "לא ניתן ליצור את קישור ההזמנה.",
+      "noCalendars": "אין עדיין יומני פגישות.",
+      "manageCalendars": "ניהול יומני פגישות"
+    }
   }
 }

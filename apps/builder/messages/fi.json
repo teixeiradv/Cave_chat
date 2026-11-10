@@ -3249,7 +3249,9 @@
       "removeHint": "Poistaa yhteystiedon viimeisimmän avoimen kohteen tässä pipelinessä.",
       "comment": "Kommentti",
       "destinationPipeline": "Kohdepipeline",
-      "destinationStage": "Kohdevaihe"
+      "destinationStage": "Kohdevaihe",
+      "missingRequiredFields": "Pakolliset kentät ilman arvoa: {names}. Kohdetta ei voi luoda ennen kuin jokaisella on arvo.",
+      "addRequiredFields": "Lisää pakolliset kentät"
     },
     "aiSegmentImage": {
       "label": "{name}: Segmentoi kuva"
@@ -4487,6 +4489,9 @@
     "waTemplateMpmTooManySections": "Usean tuotteen painikkeessa voi olla enintään 10 osiota. Poista osioita ennen julkaisua.",
     "waTemplateMpmTooManyProducts": "Usean tuotteen painikkeessa voi olla yhteensä enintään 30 tuotetta. Poista tuotteita ennen julkaisua.",
     "waTemplateLtoExpirationRequired": "Valitse määräaikaisen tarjouksen päättymisaika ennen lähettämistä.",
+    "waTemplatePaymentRequestIncomplete": "Täytä tämän painikkeen maksutiedot ennen julkaisua.",
+    "waTemplatePaymentRequestInvalid": "Maksutiedon muoto on virheellinen. Tarkista summa, linkki ja kortin numerot.",
+    "waTemplatePaymentRequestMisplaced": "Maksutiedot voi asettaa vain tavallisen (ei karusellin) mallin maksupainikkeeseen.",
     "waTemplateMpmIncompleteProducts": "Jokaisessa osiossa on oltava vähintään yksi valittu tuote — poista tyhjät rivit tai valitse niille tuote.",
     "unsupportedBlock": "Tämä kanava ei tue tätä lohkoa.",
     "constraintExceeded": "Tämän kanavan raja ylittyi.",
@@ -4550,7 +4555,21 @@
     "tooManySavedReplyImages": "Tallennetussa vastauksessa voi olla enintään {max} kuvaa",
     "savedReplyImagesNotSentHere": "Kuvia ei lähetetä täällä",
     "invalidPhoneNumber": "Tämä ei ole kelvollinen puhelinnumero. Lisää maatunnus, esimerkiksi +1.",
-    "buttonCallPhoneNumberUnsupported": "Tämä painike ei voi soittaa puhelinnumeroon täällä. Valitse toinen toiminto."
+    "buttonCallPhoneNumberUnsupported": "Tämä painike ei voi soittaa puhelinnumeroon täällä. Valitse toinen toiminto.",
+    "paymentRequest": {
+      "title": "Maksupyyntö",
+      "cardEnding": "Kortti, joka päättyy {lastFourDigits}",
+      "status": "WhatsApp ei ilmoita maksusta. Tarkista maksupalveluntarjoajaltasi.",
+      "cardStatus": "Asiakkaan vahvistus ei veloita korttia. Veloita maksupalveluntarjoajasi kautta.",
+      "sentFromTemplate": "Pohja: {name}"
+    },
+    "paymentConfirmation": {
+      "title": "Asiakas vahvisti maksun",
+      "cardTitle": "Asiakas vahvisti korttimaksun",
+      "cardEnding": "Kortti, joka päättyy {lastFourDigits}",
+      "notCharged": "Ei vielä veloitettu. Veloita maksupalveluntarjoajasi kautta.",
+      "reference": "Viite {referenceId}"
+    }
   },
   "instagram": {
     "description": "Tämän integraation avulla voit luoda Instagram-botteja.",
@@ -5122,7 +5141,28 @@
         "mpmSectionLimitReached": "Enimmäismäärä 10 osiota saavutettu.",
         "mpmProductLimitReached": "Enimmäismäärä 30 tuotetta saavutettu.",
         "mpmProductsSummary": "{productCount} tuotetta, {sectionCount} osiossa",
-        "unsupportedButtonParam": "Tätä painiketyyppiä ei vielä tueta."
+        "unsupportedButtonParam": "Tätä painiketyyppiä ei vielä tueta.",
+        "payment": {
+          "method": {
+            "pix": "Pix",
+            "boleto": "Boleto",
+            "payment_link": "Maksulinkki",
+            "card_on_file": "Korttimaksu yhdellä napsautuksella"
+          },
+          "field": {
+            "code": "Pix-koodi",
+            "digitableLine": "Boleto-rivi",
+            "url": "Maksulinkin URL",
+            "lastFourDigits": "Kortin 4 viimeistä numeroa",
+            "credentialId": "Kortin credential-tunnus (valinnainen)",
+            "amount": "Summa BRL:nä, esim. 12.34"
+          },
+          "notice": {
+            "general": "Käytä muuttujaa, jotta jokainen asiakas saa omat maksutietonsa.",
+            "cardOnFile": "Korttimaksu yhdellä napsautuksella toimii vain yrityksille, joille Meta on sen ottanut käyttöön."
+          },
+          "unsupportedButton": "Tässä mallissa on maksupainike, jota ei voi lähettää: sen maksutyyppiä ei voitu selvittää. Synkronoi mallit uudelleen tai valitse toinen."
+        }
       }
     },
     "sampleBodyCardContent": {
@@ -5537,7 +5577,16 @@
     },
     "credentialSecretsRequired": "Anna sovelluksen salaisuus ja järjestelmäkäyttäjän tunnus. Niitä ei ole vielä tallennettu.",
     "embeddedSignupCancelled": "Rekisteröityminen peruttiin – voit sulkea tämän välilehden.",
-    "embeddedSignupFailed": "Rekisteröityminen ei valmistunut – sulje tämä välilehti ja yritä uudelleen."
+    "embeddedSignupFailed": "Rekisteröityminen ei valmistunut – sulje tämä välilehti ja yritä uudelleen.",
+    "payment": {
+      "settings": {
+        "title": "Maksut",
+        "description": "Miten tämä numero lähettää maksupyyntöpainikkeet.",
+        "pixRedirectLabel": "Lähetä Pix ohjauksella",
+        "pixRedirectDescription": "Ostaja avaa pankkisovelluksensa maksaakseen ja palaa WhatsAppiin. Ota käyttöön vasta, kun Meta on ottanut yrityksesi mukaan; ostajat, joita ei voi ohjata, saavat silti kopioi ja liitä -vaihtoehdon.",
+        "adminOnly": "Vain työtilan ylläpitäjät voivat muuttaa maksuasetuksia."
+      }
+    }
   },
   "zalo": {
     "title": "Zalo OA",
@@ -8199,6 +8248,7 @@
       "invalidTokenTitle": "Tämä ajanvarauslinkki ei ole käytettävissä.",
       "invalidTokenDescription": "Linkki saattaa olla virheellinen tai vanhentunut. Pyydä uusi ajanvarauslinkki.",
       "staleSlot": "Tämä aika ei ole enää saatavilla. Valitse toinen aika.",
+      "alreadyScheduled": "Tällä yhteystiedolla on jo tapaaminen tähän aikaan tässä kalenterissa. Valitse toinen aika.",
       "availabilityChanged": "Saatavuus muuttui, kun valitsit aikaa. Valitse uudelleen.",
       "submitFailed": "Emme voineet suorittaa tätä pyyntöä. Yritä uudelleen."
     },
@@ -8288,6 +8338,15 @@
     },
     "messages": {
       "empty": "Ei vielä ajanvarauksia."
+    },
+    "actions": {
+      "create": "Luo tapaaminen"
+    },
+    "create": {
+      "title": "Luo tapaaminen",
+      "description": "Valitse kalenteri ja vapaa aika varataksesi tälle yhteyshenkilölle.",
+      "noConversationHint": "Keskustelua ei ole auki, joten yhteyshenkilö ei saa vahvistusviestiä.",
+      "success": "Tapaaminen luotu."
     }
   },
   "appointmentManagement": {
@@ -9546,14 +9605,18 @@
     "release": {
       "label": "Vapauta",
       "tooltip": "Vapauta keskustelu, jotta muut sovellukset voivat vastata",
-      "success": "Keskustelu vapautettu"
+      "success": "Keskustelu vapautettu",
+      "menu": "Vapauta tai siirrä"
     },
     "pass": {
-      "menuItem": "Siirrä eskalointiin",
-      "title": "Siirretäänkö eskalointikumppanille?",
-      "description": "Siirretäänkö tämä keskustelu eskalointikumppanillesi? Vastauksesi keskeytyvät, kunnes keskustelu palaa.",
+      "menuItem": "Siirrä kumppanille",
+      "title": "Siirretäänkö kumppanille?",
+      "description": "Valitse, kuka ottaa keskustelun hoitaakseen. Vastauksesi keskeytyvät, kunnes keskustelu palaa.",
       "confirm": "Siirrä",
-      "success": "Keskustelu siirretty eskalointikumppanille"
+      "success": "Keskustelu siirretty eskalointikumppanille",
+      "targetLabel": "Siirrä kumppanille",
+      "noteLabel": "Huomautus vastaanottavalle kumppanille",
+      "successTargeted": "Keskustelu siirretty: {role}"
     },
     "aiHandover": {
       "label": "BizAI",
@@ -9572,7 +9635,10 @@
       "notEscalation": "Vain eskalointikumppani voi ottaa keskustelun haltuun. Reititys määritetään Meta Business Suitessa.",
       "notPrimaryReceiver": "Tämän sovelluksen on oltava sivun ensisijainen vastaanottaja, jotta se voi ottaa keskustelun haltuunsa. Määritä se sivun Handover Protocol -asetuksissa.",
       "learnMore": "Lue lisää",
-      "dismiss": "Lähetä silti"
+      "dismiss": "Lähetä silti",
+      "takeOverTitle": "Otetaanko keskustelu haltuun?",
+      "takeOverDescription": "Kumppani lopettaa sen käsittelyn ja sinä otat hallinnan. Voit jättää hänelle huomautuksen.",
+      "takeOverNoteLabel": "Huomautus nykyiselle kumppanille"
     },
     "divider": {
       "ownerHandling": "{owner} käsittelee nyt tätä keskustelua",
@@ -9645,8 +9711,12 @@
     "step": {
       "action": "Toiminto",
       "release": "Vapauta keskustelu",
-      "pass": "Siirrä eskalointikumppanille",
-      "helper": "Vain WhatsApp. Muilla kanavilla tai kun keskustelu ei ole täällä hallinnassa, vaihe seuraa virhepolkua."
+      "pass": "Siirrä kumppanille",
+      "helper": "Vain WhatsApp. Muilla kanavilla tai kun keskustelu ei ole täällä hallinnassa, vaihe seuraa virhepolkua.",
+      "targetRole": "Siirrä kumppanille",
+      "targetRoleDefault": "Eskalointikumppani (oletus)",
+      "metadata": "Siirtohuomautus",
+      "metadataHelper": "Valinnainen. Lähetetään sellaisenaan keskustelun vastaanottavalle sovellukselle. Muuttujat ovat tuettuja. Enintään {max} merkkiä."
     },
     "template": {
       "sent": "Malli lähetetty"
@@ -11735,5 +11805,18 @@
     "accessRemoved": "The provider removed access to this account. Reconnect to resume.",
     "needsReconnect": "Reconnect required.",
     "inactive": "This channel is inactive."
+  },
+  "inbox": {
+    "createAppointment": {
+      "title": "Luo tapaaminen",
+      "description": "Lähetä yhteyshenkilölle kalenterin varauslinkki tai avaa se varataksesi hänen puolestaan.",
+      "inactive": "Ei käytössä",
+      "sendLink": "Lähetä kalenterilinkki",
+      "goToLink": "Siirry kalenterilinkkiin",
+      "sent": "Varauslinkki lähetetty.",
+      "failed": "Varauslinkin luominen epäonnistui.",
+      "noCalendars": "Ei vielä tapaamiskalentereita.",
+      "manageCalendars": "Hallitse tapaamiskalentereita"
+    }
   }
 }

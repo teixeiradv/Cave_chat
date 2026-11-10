@@ -3405,7 +3405,9 @@
       "removeHint": "يحذف أحدث عنصر مفتوح لجهة الاتصال في خط سير العمل هذا.",
       "comment": "التعليق",
       "destinationPipeline": "خط سير العمل الوجهة",
-      "destinationStage": "المرحلة الوجهة"
+      "destinationStage": "المرحلة الوجهة",
+      "missingRequiredFields": "حقول مطلوبة بلا قيمة: {names}. لا يمكن إنشاء العنصر حتى يكون لكل منها قيمة.",
+      "addRequiredFields": "إضافة الحقول المطلوبة"
     },
     "aiSegmentImage": {
       "label": "{name}: تقسيم الصورة"
@@ -4487,6 +4489,9 @@
     "waTemplateMpmTooManySections": "يمكن أن يحتوي زر المنتجات المتعددة على 10 أقسام كحد أقصى. أزل بعض الأقسام قبل النشر.",
     "waTemplateMpmTooManyProducts": "يمكن أن يحتوي زر المنتجات المتعددة على 30 منتجًا كحد أقصى إجمالاً. أزل بعض المنتجات قبل النشر.",
     "waTemplateLtoExpirationRequired": "اختر تاريخ انتهاء العرض المحدود المدة قبل الإرسال.",
+    "waTemplatePaymentRequestIncomplete": "أكمل بيانات الدفع لهذا الزر قبل النشر.",
+    "waTemplatePaymentRequestInvalid": "تنسيق أحد بيانات الدفع غير صالح. تحقق من المبلغ والرابط وأرقام البطاقة.",
+    "waTemplatePaymentRequestMisplaced": "يمكن تعيين بيانات الدفع فقط على زر دفع في قالب عادي (غير دوّار).",
     "waTemplateMpmIncompleteProducts": "يحتاج كل قسم إلى منتج واحد محدد على الأقل — احذف الصفوف الفارغة أو اختر منتجًا لها.",
     "unsupportedBlock": "هذه القناة لا تدعم هذه الكتلة.",
     "constraintExceeded": "تم تجاوز حد هذه القناة.",
@@ -4550,7 +4555,21 @@
     "tooManySavedReplyImages": "يمكن أن يحتوي الرد المحفوظ على {max} صور كحد أقصى",
     "savedReplyImagesNotSentHere": "لن يتم إرسال الصور هنا",
     "invalidPhoneNumber": "هذا ليس رقم هاتف صالحًا. أضف رمز الدولة، مثل ‎+1.",
-    "buttonCallPhoneNumberUnsupported": "لا يمكن لهذا الزر الاتصال برقم هاتف هنا. اختر إجراءً آخر."
+    "buttonCallPhoneNumberUnsupported": "لا يمكن لهذا الزر الاتصال برقم هاتف هنا. اختر إجراءً آخر.",
+    "paymentRequest": {
+      "title": "طلب دفع",
+      "cardEnding": "بطاقة تنتهي بـ {lastFourDigits}",
+      "status": "لا يبلغ WhatsApp عن الدفع. تحقق لدى مزود الدفع.",
+      "cardStatus": "تأكيد العميل لا يخصم من البطاقة. اخصمه عبر مزود الدفع.",
+      "sentFromTemplate": "القالب: {name}"
+    },
+    "paymentConfirmation": {
+      "title": "أكد العميل الدفع",
+      "cardTitle": "أكد العميل الدفع بالبطاقة",
+      "cardEnding": "بطاقة تنتهي بـ {lastFourDigits}",
+      "notCharged": "لم يتم الخصم بعد. اخصمه عبر مزود الدفع.",
+      "reference": "المرجع {referenceId}"
+    }
   },
   "instagram": {
     "description": "يتيح لك هذا التكامل إنشاء بوتات Instagram.",
@@ -5122,7 +5141,28 @@
         "mpmSectionLimitReached": "تم الوصول إلى الحد الأقصى 10 أقسام.",
         "mpmProductLimitReached": "تم الوصول إلى الحد الأقصى 30 منتجًا.",
         "mpmProductsSummary": "{productCount} منتج في {sectionCount} أقسام",
-        "unsupportedButtonParam": "هذا النوع من الأزرار غير مدعوم بعد."
+        "unsupportedButtonParam": "هذا النوع من الأزرار غير مدعوم بعد.",
+        "payment": {
+          "method": {
+            "pix": "Pix",
+            "boleto": "Boleto",
+            "payment_link": "رابط الدفع",
+            "card_on_file": "الدفع بالبطاقة بنقرة واحدة"
+          },
+          "field": {
+            "code": "رمز Pix",
+            "digitableLine": "سطر Boleto الرقمي",
+            "url": "عنوان URL لرابط الدفع",
+            "lastFourDigits": "آخر 4 أرقام من البطاقة",
+            "credentialId": "معرّف بيانات اعتماد البطاقة (اختياري)",
+            "amount": "المبلغ بالريال البرازيلي، مثل 12.34"
+          },
+          "notice": {
+            "general": "استخدم متغيرًا ليحصل كل عميل على بيانات الدفع الخاصة به.",
+            "cardOnFile": "الدفع بالبطاقة بنقرة واحدة يعمل فقط للأنشطة التي فعّلته لها Meta."
+          },
+          "unsupportedButton": "يحتوي هذا القالب على زر دفع لا يمكن إرساله: تعذّر تحديد نوع الدفع. أعد مزامنة القوالب أو اختر قالبًا آخر."
+        }
       }
     },
     "sampleBodyCardContent": {
@@ -5537,7 +5577,16 @@
     },
     "credentialSecretsRequired": "أدخل سر التطبيق ورمز مستخدم النظام. لم يتم تخزينهما بعد.",
     "embeddedSignupCancelled": "تم إلغاء التسجيل — يمكنك إغلاق علامة التبويب هذه.",
-    "embeddedSignupFailed": "لم يكتمل التسجيل — أغلق علامة التبويب هذه وحاول مرة أخرى."
+    "embeddedSignupFailed": "لم يكتمل التسجيل — أغلق علامة التبويب هذه وحاول مرة أخرى.",
+    "payment": {
+      "settings": {
+        "title": "المدفوعات",
+        "description": "كيف يرسل هذا الرقم أزرار طلب الدفع.",
+        "pixRedirectLabel": "إرسال Pix مع إعادة التوجيه",
+        "pixRedirectDescription": "يفتح المشتري تطبيق البنك للدفع ثم يعود إلى WhatsApp. فعّله فقط بعد أن تضم Meta نشاطك؛ المشترون الذين لا يمكن إعادة توجيههم يحصلون على النسخ واللصق.",
+        "adminOnly": "يمكن لمسؤولي مساحة العمل فقط تغيير إعدادات الدفع."
+      }
+    }
   },
   "zalo": {
     "title": "Zalo OA",
@@ -8199,6 +8248,7 @@
       "invalidTokenTitle": "رابط الحجز هذا غير متاح.",
       "invalidTokenDescription": "قد يكون الرابط غير صالح أو منتهي الصلاحية. يُرجى طلب رابط حجز جديد.",
       "staleSlot": "هذا الوقت لم يعد متاحًا. يُرجى اختيار وقت آخر.",
+      "alreadyScheduled": "لدى جهة الاتصال هذه موعد بالفعل في هذا الوقت على هذا التقويم. يُرجى اختيار وقت آخر.",
       "availabilityChanged": "تغيّر التوفر أثناء اختيارك للوقت. يُرجى الاختيار مرة أخرى.",
       "submitFailed": "تعذّر إتمام هذا الطلب. يُرجى المحاولة مرة أخرى."
     },
@@ -8288,6 +8338,15 @@
     },
     "messages": {
       "empty": "لا توجد مواعيد بعد."
+    },
+    "actions": {
+      "create": "إنشاء موعد"
+    },
+    "create": {
+      "title": "إنشاء موعد",
+      "description": "اختر تقويمًا ووقتًا متاحًا للحجز لجهة الاتصال هذه.",
+      "noConversationHint": "لا توجد محادثة مفتوحة، لذا لن تتلقى جهة الاتصال رسالة تأكيد.",
+      "success": "تم إنشاء الموعد."
     }
   },
   "appointmentManagement": {
@@ -9546,14 +9605,18 @@
     "release": {
       "label": "تحرير",
       "tooltip": "حرّر هذه المحادثة ليتمكن التطبيقات الأخرى من الرد",
-      "success": "تم تحرير المحادثة"
+      "success": "تم تحرير المحادثة",
+      "menu": "تحرير أو تمرير"
     },
     "pass": {
-      "menuItem": "تمرير إلى التصعيد",
-      "title": "التمرير إلى شريك التصعيد؟",
-      "description": "هل تريد تسليم هذه المحادثة إلى شريك التصعيد؟ ستتوقف ردودك مؤقتًا حتى تعود المحادثة.",
+      "menuItem": "تمرير إلى شريك",
+      "title": "التمرير إلى شريك؟",
+      "description": "اختر من سيتولى هذه المحادثة. تتوقف ردودك مؤقتًا حتى تعود المحادثة إليك.",
       "confirm": "تمرير",
-      "success": "تم تمرير المحادثة إلى شريك التصعيد"
+      "success": "تم تمرير المحادثة إلى شريك التصعيد",
+      "targetLabel": "تمرير إلى",
+      "noteLabel": "ملاحظة للشريك المستلم",
+      "successTargeted": "تم تمرير المحادثة إلى {role}"
     },
     "aiHandover": {
       "label": "BizAI",
@@ -9572,7 +9635,10 @@
       "notEscalation": "يمكن لشريك التصعيد فقط الاستلام. يتم ضبط التوجيه في Meta Business Suite.",
       "notPrimaryReceiver": "يجب أن يكون هذا التطبيق المستلم الأساسي للصفحة ليتمكن من الاستلام. اضبط ذلك في إعدادات بروتوكول التسليم للصفحة.",
       "learnMore": "اعرف المزيد",
-      "dismiss": "إرسال على أي حال"
+      "dismiss": "إرسال على أي حال",
+      "takeOverTitle": "هل تريد تولي هذه المحادثة؟",
+      "takeOverDescription": "سيتوقف الشريك عن التعامل معها وتتولى أنت التحكم. يمكنك ترك ملاحظة له.",
+      "takeOverNoteLabel": "ملاحظة للشريك الحالي"
     },
     "divider": {
       "ownerHandling": "{owner} يتولى هذه المحادثة الآن",
@@ -9645,8 +9711,12 @@
     "step": {
       "action": "إجراء",
       "release": "تحرير المحادثة",
-      "pass": "التمرير إلى شريك التصعيد",
-      "helper": "واتساب فقط. على القنوات الأخرى، أو عندما لا تكون المحادثة مملوكة هنا، تتبع الخطوة مسار الخطأ."
+      "pass": "التمرير إلى شريك",
+      "helper": "واتساب فقط. على القنوات الأخرى، أو عندما لا تكون المحادثة مملوكة هنا، تتبع الخطوة مسار الخطأ.",
+      "targetRole": "تمرير إلى",
+      "targetRoleDefault": "شريك التصعيد (الافتراضي)",
+      "metadata": "ملاحظة التسليم",
+      "metadataHelper": "اختياري. تُرسل كما هي إلى التطبيق الذي يستلم المحادثة. المتغيرات مدعومة. حتى {max} حرف."
     },
     "template": {
       "sent": "تم إرسال القالب"
@@ -11735,5 +11805,18 @@
     "accessRemoved": "The provider removed access to this account. Reconnect to resume.",
     "needsReconnect": "Reconnect required.",
     "inactive": "This channel is inactive."
+  },
+  "inbox": {
+    "createAppointment": {
+      "title": "إنشاء موعد",
+      "description": "أرسل إلى جهة الاتصال رابط حجز لتقويم، أو افتحه للحجز نيابةً عنها.",
+      "inactive": "غير نشط",
+      "sendLink": "إرسال رابط التقويم",
+      "goToLink": "الانتقال إلى رابط التقويم",
+      "sent": "تم إرسال رابط الحجز.",
+      "failed": "تعذّر إنشاء رابط الحجز.",
+      "noCalendars": "لا توجد تقويمات مواعيد بعد.",
+      "manageCalendars": "إدارة تقويمات المواعيد"
+    }
   }
 }

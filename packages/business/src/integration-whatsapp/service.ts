@@ -36,6 +36,7 @@ import { recordRefreshedAuth } from "../connection/record-refreshed-auth"
 import { connectionStateService } from "../connection/state-service"
 import { notFoundException } from "../errors"
 import { flowService } from "../flow/service"
+import { resolveCredentialOwnerIdForWorkspace } from "../google-ads/owner"
 import { logger } from "../logger"
 import { createDatasetWithFallback } from "../meta-conversions/dataset-fallback"
 import {
@@ -650,7 +651,10 @@ class IntegrationWhatsappService extends BaseService {
     })
     const systemUserToken =
       await platformCredentialService.resolveWhatsappSystemUserToken({
-        ownerId: workspace.ownerId,
+        ownerId: await resolveCredentialOwnerIdForWorkspace(
+          input.workspaceId,
+          workspace,
+        ),
         tx: input.tx,
       })
     if (!systemUserToken) {
@@ -853,6 +857,24 @@ class IntegrationWhatsappService extends BaseService {
     })
     if (enablesTranscriptionAlone && !row) {
       throw new WhatsappCallTranscriptionRequiresRecordingError()
+    }
+  }
+
+  /**
+   * Turns Pix with redirect on or off for a number. Only a local send policy
+   * (Meta has to onboard the business first), so nothing is called at Meta and
+   * there is no cache to invalidate: the worker reads the integration row
+   * uncached.
+   */
+  async updatePixRedirectEnabled(input: {
+    id: string
+    workspaceId: string
+    enabled: boolean
+  }): Promise<void> {
+    const row =
+      await integrationWhatsappRepository.updatePixRedirectEnabled(input)
+    if (!row) {
+      throw notFoundException("WhatsApp integration not found")
     }
   }
 
