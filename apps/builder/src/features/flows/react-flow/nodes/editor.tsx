@@ -28,7 +28,20 @@ import { cn } from "@chatbotx.io/ui/lib/utils"
 import { createId } from "@chatbotx.io/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useReactFlow } from "@xyflow/react"
-import { CopyIcon, MoveVerticalIcon, PlusIcon, XIcon } from "lucide-react"
+import {
+  ClockIcon,
+  CopyIcon,
+  FileTextIcon,
+  GalleryHorizontalIcon,
+  ImageIcon,
+  KeyboardIcon,
+  MessageSquareTextIcon,
+  MoveVerticalIcon,
+  PlusIcon,
+  VideoIcon,
+  Volume2Icon,
+  XIcon,
+} from "lucide-react"
 import { useTranslations } from "next-intl"
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
@@ -51,6 +64,7 @@ import { useFlowTemplate } from "../stores/flow-template-store-provider"
 import { useStepStore } from "../stores/step-store-provider"
 import { useFlowHistory } from "../stores/use-flow-history"
 import { useWhatsappFlow } from "../stores/whatsapp-flow-store-provider"
+import { nodeTypeSchema } from "@chatbotx.io/flow-config"
 import { allNodesConfig } from "./node-config"
 import { QuickReplySettingsDialog } from "./quick-reply-settings/quick-reply-settings-dialog"
 import { QuickReplySettingsEdgeSyncs } from "./quick-reply-settings/quick-reply-settings-edge-sync"
@@ -171,6 +185,47 @@ const NodeEditorQuickReplies = ({ nodeId }: { nodeId: string }) => {
   )
 }
 
+/** Gaio's "Adicionar conteúdo" list for a Mensagem block. */
+const gaioContentMenu = (): MenuItem[] => [
+  {
+    label: "Mensagem",
+    icon: MessageSquareTextIcon,
+    stepType: stepTypes.enum.sendText,
+  },
+  {
+    label: "Pergunta",
+    icon: KeyboardIcon,
+    stepType: stepTypes.enum.getUserData,
+    props: { skipButtonLabel: "Pular" },
+  },
+  {
+    label: "Cartões",
+    icon: GalleryHorizontalIcon,
+    stepType: stepTypes.enum.sendCarousel,
+  },
+  { label: "Aguardar", icon: ClockIcon, stepType: stepTypes.enum.typing },
+  { label: "Áudio", icon: Volume2Icon, stepType: stepTypes.enum.sendAudio },
+  { label: "Imagem", icon: ImageIcon, stepType: stepTypes.enum.sendImage },
+  { label: "Vídeo", icon: VideoIcon, stepType: stepTypes.enum.sendVideo },
+  { label: "PDF", icon: FileTextIcon, stepType: stepTypes.enum.sendFile },
+]
+
+const collectStepTypes = (items: MenuItem[]): Set<string> => {
+  const found = new Set<string>()
+  const walk = (list: MenuItem[]) => {
+    for (const item of list) {
+      if (item.stepType) {
+        found.add(item.stepType)
+      }
+      if (item.children) {
+        walk(item.children)
+      }
+    }
+  }
+  walk(items)
+  return found
+}
+
 const NodeEditorMenu = memo(
   ({
     nodeType,
@@ -214,22 +269,55 @@ const NodeEditorMenu = memo(
       beforeStep,
     ])
 
+    // Only the content the block's channel supports (same rule as the full menu).
+    const gaioContent = useMemo(() => {
+      if (nodeType !== nodeTypeSchema.enum.sendMessage) {
+        return []
+      }
+      const supported = collectStepTypes(nodeMenus)
+      return gaioContentMenu().filter(
+        (item) => item.stepType && supported.has(item.stepType),
+      )
+    }, [nodeMenus, nodeType])
+
     return (
       nodeMenus.length > 0 && (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button variant="outline">
-                <PlusIcon />
-                {t("actions.create")}
-              </Button>
-            }
-          />
+        <div className="flex flex-col gap-2">
+          {gaioContent.length > 0 ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button className="w-full" variant="secondary">
+                    <PlusIcon />
+                    Adicionar conteúdo
+                  </Button>
+                }
+              />
+              <DropdownMenuContent className="w-64">
+                <RecursiveDropdownMenu data={gaioContent} onClick={onClick} />
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  className={gaioContent.length > 0 ? "w-full" : undefined}
+                  variant="outline"
+                >
+                  <PlusIcon />
+                  {gaioContent.length > 0
+                    ? "Mais conteúdos e ações"
+                    : t("actions.create")}
+                </Button>
+              }
+            />
 
-          <DropdownMenuContent className="w-full">
-            <RecursiveDropdownMenu data={nodeMenus} onClick={onClick} />
-          </DropdownMenuContent>
-        </DropdownMenu>
+            <DropdownMenuContent className="w-full">
+              <RecursiveDropdownMenu data={nodeMenus} onClick={onClick} />
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       )
     )
   },

@@ -3,13 +3,12 @@ import {
   type FlowNode,
   type FlowRouteUpdate,
   nodeTypeSchema,
-  sendMessageNodeDefaultFn,
+  stepTypes,
 } from "@chatbotx.io/flow-config"
 import { useDebouncedCallback } from "@chatbotx.io/ui/hooks/use-debounced-callback"
 import {
   Background,
   type Connection,
-  Controls,
   type Edge,
   type FinalConnectionState,
   MarkerType,
@@ -43,11 +42,15 @@ import {
   type DuplicateSaveResult,
 } from "./duplicate-node-orchestrator"
 import { FlowMutationProvider } from "./flow-mutation-context"
-import { NodeViewer } from "./nodes/viewer"
-import AddNodeButton from "./panel-buttons/add-node-button"
-import FocusButton from "./panel-buttons/focus-button"
-import ZoomInButton from "./panel-buttons/zoom-in-button"
-import ZoomOutButton from "./panel-buttons/zoom-out-button"
+import {
+  applyLinkButtonRoutes,
+  splitLinkButtonRoutes,
+} from "./link-button-routes"
+import { GaioNodeViewer } from "./nodes/gaio/gaio-node"
+import {
+  createGaioBlock,
+  GaioCanvasToolbar,
+} from "./panel-buttons/gaio-block-menu"
 import { duplicateFlowNode } from "./toolbar/duplicate-node-data"
 import "./react-flow-wrapper.css"
 import { createId } from "@chatbotx.io/utils"
@@ -73,17 +76,18 @@ function getClientPosition(event: MouseEvent | TouchEvent) {
   return { x: event.clientX, y: event.clientY }
 }
 
+// Every node is drawn as a Gaio-style block (see nodes/gaio).
 const viewerNodeTypes = {
-  [nodeTypeSchema.enum.sendMessage]: NodeViewer,
-  [nodeTypeSchema.enum.sendMail]: NodeViewer,
-  [nodeTypeSchema.enum.landingPage]: NodeViewer,
-  [nodeTypeSchema.enum.performAction]: NodeViewer,
-  [nodeTypeSchema.enum.addNotes]: NodeViewer,
-  [nodeTypeSchema.enum.wait]: NodeViewer,
-  [nodeTypeSchema.enum.followUp]: NodeViewer,
-  [nodeTypeSchema.enum.startFlow]: NodeViewer,
-  [nodeTypeSchema.enum.splitTraffic]: NodeViewer,
-  [nodeTypeSchema.enum.condition]: NodeViewer,
+  [nodeTypeSchema.enum.sendMessage]: GaioNodeViewer,
+  [nodeTypeSchema.enum.sendMail]: GaioNodeViewer,
+  [nodeTypeSchema.enum.landingPage]: GaioNodeViewer,
+  [nodeTypeSchema.enum.performAction]: GaioNodeViewer,
+  [nodeTypeSchema.enum.addNotes]: GaioNodeViewer,
+  [nodeTypeSchema.enum.wait]: GaioNodeViewer,
+  [nodeTypeSchema.enum.followUp]: GaioNodeViewer,
+  [nodeTypeSchema.enum.startFlow]: GaioNodeViewer,
+  [nodeTypeSchema.enum.splitTraffic]: GaioNodeViewer,
+  [nodeTypeSchema.enum.condition]: GaioNodeViewer,
 }
 
 const edgeTypes = {
@@ -418,11 +422,23 @@ export function ReactFlowWrapper({
 
   const applyButtonRoutes = useCallback(
     (routeUpdates: readonly FlowRouteUpdate[]) => {
-      setNodes((currentNodes) =>
-        applyRouteUpdatesInNodes(currentNodes, routeUpdates),
-      )
+      setNodes((currentNodes) => {
+        // Link buttons keep their URL: their edge becomes the click path.
+        const { linkUpdates, otherUpdates } = splitLinkButtonRoutes(
+          currentNodes,
+          routeUpdates,
+        )
+        return applyLinkButtonRoutes(
+          applyRouteUpdatesInNodes(currentNodes, otherUpdates),
+          linkUpdates,
+          {
+            origin: window.location.origin,
+            workspaceId: String(flowVersion.workspaceId),
+          },
+        )
+      })
     },
-    [setNodes],
+    [setNodes, flowVersion.workspaceId],
   )
 
   const onConnect = useCallback(
@@ -510,18 +526,21 @@ export function ReactFlowWrapper({
         return
       }
 
-      const messageNodesLength = getNodes().filter(
-        (node) => node.type === nodeTypeSchema.enum.sendMessage,
-      ).length
-      const newNode = sendMessageNodeDefaultFn({
-        nodeProps: { position },
-        dataProps: {
-          name: `${t("actions.sendMessage")} #${messageNodesLength + 1}`,
-        },
-      })
-
+      // Dropping a connection on the empty canvas creates a Gaio "Mensagem".
       takeCoalescedSnapshot()
-      addNodes([newNode])
+      const newNode = createGaioBlock(
+        reactFlow,
+        t,
+        {
+          nodeType: nodeTypeSchema.enum.sendMessage,
+          name: "Mensagem",
+          steps: [stepTypes.enum.sendText],
+        },
+        position,
+      )
+      if (!newNode) {
+        return
+      }
       setEdges((currentEdges) =>
         replaceSourceHandleEdge(currentEdges, {
           id: createId(),
@@ -545,8 +564,7 @@ export function ReactFlowWrapper({
       }
     },
     [
-      addNodes,
-      getNodes,
+      reactFlow,
       getIntersectingNodes,
       isReadOnly,
       setEdges,
@@ -630,19 +648,8 @@ export function ReactFlowWrapper({
           />
         )}
         <Background />
-        <Panel className="w-[254px]" position="bottom-center">
-          <Controls
-            className="overflow-hidden rounded-md shadow-none!"
-            orientation="horizontal"
-            showFitView={false}
-            showInteractive={false}
-            showZoom={false}
-          >
-            <FocusButton />
-            <ZoomInButton />
-            <ZoomOutButton />
-            {isReadOnly ? null : <AddNodeButton />}
-          </Controls>
+        <Panel className="m-4!" position="top-right">
+          <GaioCanvasToolbar isReadOnly={isReadOnly} />
         </Panel>
       </ReactFlow>
     </FlowMutationProvider>

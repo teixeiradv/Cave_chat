@@ -5,7 +5,7 @@ import {
   EdgeLabelRenderer,
   type EdgeProps,
   EdgeToolbar,
-  getBezierPath,
+  getSmoothStepPath,
   useReactFlow,
 } from "@xyflow/react"
 import { Trash2Icon } from "lucide-react"
@@ -43,7 +43,12 @@ export default memo((props: EdgeProps) => {
     ...rest
   } = props
 
-  const [edgePath, centerX, centerY] = getBezierPath(props)
+  // Gaio draws its connections as rounded right-angle lines.
+  const [edgePath, centerX, centerY] = getSmoothStepPath({
+    ...props,
+    borderRadius: 16,
+    offset: 24,
+  })
 
   return (
     <>
