@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
+import { BrandLogo, isDefaultBrandAsset } from "@/components/brand-logo"
 import { useTenantSettings } from "@/features/tenant"
 import { useCurrentTheme } from "@/hooks/use-current-theme"
 
@@ -25,18 +26,20 @@ export const AuthHeader = ({ title }: AuthHeaderProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-center gap-4">
-        {mounted ? (
+      <div className="flex h-16 items-center justify-center">
+        {isDefaultBrandAsset(logoUrl) ? (
+          <BrandLogo alt={name} size="lg" />
+        ) : mounted ? (
           <Image
             alt={name}
+            className="h-16 w-auto object-contain"
             height={80}
             priority={true}
             src={logoUrl}
+            unoptimized
             width={271}
           />
-        ) : (
-          <div className="h-20 w-[271px]" />
-        )}
+        ) : null}
       </div>
 
       <CardTitle className="font-semibold text-foreground text-xl">{title}</CardTitle>

@@ -85,4 +85,10 @@ describe("isPublicRoute", () => {
     expect(isPublicRoute("/connect")).toBe(true)
     expect(isPublicRoute("/connect/sess-abc123")).toBe(true)
   })
+
+  test("/legal pages are public so Meta can review the privacy policy", () => {
+    expect(isPublicRoute("/legal/privacidade")).toBe(true)
+    expect(isPublicRoute("/legal/exclusao-de-dados")).toBe(true)
+    expect(isPublicRoute("/legalize")).toBe(false)
+  })
 })

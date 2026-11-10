@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
+import { BrandLogo } from "@/components/brand-logo"
 import type { QuotaMetric } from "@/components/usage-bars"
 import { UsageBars } from "@/components/usage-bars"
 import { UpgradePlanButton } from "@/enterprise/features/billing/upgrade-plan-dialog"
@@ -84,6 +85,13 @@ export const AccountRail = async ({
     // scrolls internally once content overflows — do not swap this back
     // to `max-h`.
     <aside className="flex w-full shrink-0 flex-col rounded-xl border bg-card md:sticky md:top-8 md:h-[calc(100vh-4rem)] md:w-72">
+      <Link
+        aria-label="CaveChat"
+        className="flex h-14 shrink-0 items-center border-b px-6"
+        href="/"
+      >
+        <BrandLogo size="sm" />
+      </Link>
       <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain p-6 md:pb-2">
         <div className="relative flex items-center gap-3">
           <Avatar className="size-11">

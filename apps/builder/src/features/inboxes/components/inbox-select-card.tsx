@@ -18,6 +18,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { memo, useCallback, useEffect } from "react"
 import type { MessageKey } from "@/features/channel-connect/lib/message-key"
+import { BrandLogo } from "@/components/brand-logo"
 import { InboxIcon } from "./inbox-icon"
 
 /** Query param a failed connect redirects back with (see `createFirstWorkspace`). */
@@ -92,11 +93,21 @@ function InboxSelectCard({
     [router, searchParams],
   )
 
+  // Opened from inside a workspace ("Criar Caixa de entrada") it adds a
+  // channel to that workspace; without one it creates a new workspace.
+  const addsToWorkspace = Boolean(searchParams.get("workspaceId"))
+
   return (
-    <Card className="mx-auto mt-40 max-w-md">
+    <div className="mx-auto mt-10 flex w-full max-w-md flex-col items-center gap-6 px-4 sm:mt-24">
+      <BrandLogo size="md" />
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="font-bold text-xl">
-          {t("actions.createFeature", { feature: t("fields.workspace.label") })}
+          {addsToWorkspace
+            ? t("actions.connectFeature", { feature: t("fields.channel.label") })
+            : t("actions.createFeature", {
+                feature: t("fields.workspace.label"),
+              })}
         </CardTitle>
         <CardDescription />
       </CardHeader>
@@ -128,6 +139,7 @@ function InboxSelectCard({
         </ul>
       </CardContent>
     </Card>
+    </div>
   )
 }
 

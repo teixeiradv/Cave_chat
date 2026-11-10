@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next"
 import { NextIntlClientProvider } from "next-intl"
 import { getLocale } from "next-intl/server"
 import type { ReactNode } from "react"
+import { isDefaultBrandAsset } from "@/components/brand-logo"
 import { DataTableLabelsBridge } from "@/components/data-table-labels-bridge"
 import { FormOptionalLabelBridge } from "@/components/form-optional-label-bridge"
 import { PublicEnvScript } from "@/components/public-env-script"
@@ -27,27 +28,66 @@ export const viewport: Viewport = {
   // `env(safe-area-inset-*)` reports real values. Fixed mobile chrome
   // (the sidebar's edge handle, the inbox composer) relies on those insets.
   viewportFit: "cover",
+  themeColor: "#0a0a0b",
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { name, faviconUrl } = await getTenantSettings()
+  const { name, faviconUrl, appUrl } = await getTenantSettings()
+  // Built-in CaveChat icons ship in several sizes; a tenant override (white
+  // label) only has the single favicon URL it uploaded.
+  const builtIn = isDefaultBrandAsset(faviconUrl)
+  const description = `${name} — automações e atendimento no Instagram, WhatsApp e Messenger`
 
   return {
+    metadataBase: new URL(appUrl),
     title: name,
-    description: name,
-    icons: [
-      {
-        rel: "icon",
-        url: faviconUrl ?? "/brand/cavechat-icon-96.png",
-        type: "image/png",
-      },
-      {
-        rel: "apple-touch-icon",
-        url: faviconUrl ?? "/brand/cavechat-icon-180.png",
-        sizes: "180x180",
-      },
-    ],
-    manifest: "/brand/favicon/site.webmanifest",
+    description,
+    applicationName: name,
+    icons: builtIn
+      ? {
+          icon: [
+            { url: "/brand/v2/favicon.ico", sizes: "any" },
+            {
+              url: "/brand/v2/favicon-32.png",
+              sizes: "32x32",
+              type: "image/png",
+            },
+            {
+              url: "/brand/v2/favicon-96.png",
+              sizes: "96x96",
+              type: "image/png",
+            },
+          ],
+          apple: [
+            {
+              url: "/brand/v2/apple-touch-icon.png",
+              sizes: "180x180",
+              type: "image/png",
+            },
+          ],
+        }
+      : { icon: faviconUrl, apple: faviconUrl },
+    manifest: "/brand/v2/site.webmanifest",
+    openGraph: {
+      type: "website",
+      siteName: name,
+      title: name,
+      description,
+      images: [
+        {
+          url: "/brand/v2/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: name,
+      description,
+      images: ["/brand/v2/og-image.png"],
+    },
   }
 }
 

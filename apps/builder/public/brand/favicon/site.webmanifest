@@ -1,21 +1,31 @@
 {
-  "name": "ChatbotX",
-  "short_name": "ChatbotX",
+  "name": "CaveChat",
+  "short_name": "CaveChat",
+  "description": "Automações e atendimento no Instagram, WhatsApp e Messenger",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#0a0a0b",
+  "background_color": "#0a0a0b",
   "icons": [
     {
-      "src": "/brand/favicon/favicon-192x192.png",
+      "src": "/brand/v2/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any"
     },
     {
-      "src": "/brand/favicon/favicon-512x512.png",
+      "src": "/brand/v2/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/v2/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  ]
 }
